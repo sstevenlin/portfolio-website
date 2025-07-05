@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
       scene.add(top);
 
       let wob = 0;
-      const spinSpeed = 0.02, wobbleSpeed = 0, wobbleAmt = 0;
+      const spinSpeed = 0.15, wobbleSpeed = 0, wobbleAmt = 0;
       (function animate() {
 
         requestAnimationFrame(animate);
@@ -92,4 +92,22 @@ document.addEventListener('DOMContentLoaded', () => {
     camera.aspect = w/h;
     camera.updateProjectionMatrix();
   });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const slider = document.querySelector('.image-slider');
+  if (!slider) return;
+  const slides = slider.querySelectorAll('.slides img');
+  let idx = 0;
+
+  const show = newIndex => {
+    slides[idx].classList.remove('active');
+    idx = (newIndex + slides.length) % slides.length;
+    slides[idx].classList.add('active');
+  };
+
+  slider.querySelector('.prev-btn')
+    .addEventListener('click', () => show(idx - 1));
+  slider.querySelector('.next-btn')
+    .addEventListener('click', () => show(idx + 1));
 });

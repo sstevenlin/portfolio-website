@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Steven Lin | Portfolio</title>
 
-  <!-- import‐map for ES modules (three + GLTFLoader) -->
+  <!-- import-map for ES modules (three + GLTFLoader) -->
   <script type="importmap">
   {
     "imports": {
@@ -15,23 +15,19 @@
   }
   </script>
 
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Inter, Nunito & Playfair Display -->
   <link
-    href="https://fonts.googleapis.com/css2?
-      family=Inter:wght@300;400;600&
-      family=Nunito:wght@300;400;600&
-      family=Playfair+Display:wght@700&
-      display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Nunito:wght@300;400;600&family=Playfair+Display:wght@700&display=swap"
     rel="stylesheet"
   />
 
-  <!-- Font Awesome -->
+  <!-- Font Awesome for social icons -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
 
-  <!-- YOUR MAIN STYLESHEET (fixed path!) -->
+  <!-- Main stylesheet -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
@@ -83,34 +79,36 @@
     <section id="dashboard">
       <h2>Dashboard</h2>
       <div class="dashboard-inner">
+        <!-- Left: Progress Bars -->
         <div class="dashboard-bars">
           <div class="progress-item">
+            <span class="label">Incoming AI Intern @ ScaleAI</span>
+            <div class="progress-bar"><div class="fill" style="--pct:01%" data-index="0"></div></div>
+          </div>
+          <div class="progress-item">
             <span class="label">SWE Intern @ Capital One</span>
-            <div class="progress-bar">
-              <div class="fill" style="--pct:50%" data-index="0"></div>
-            </div>
+            <div class="progress-bar"><div class="fill" style="--pct:50%" data-index="0"></div></div>
           </div>
           <div class="progress-item">
             <span class="label">Bachelor’s of CS &amp; Math</span>
-            <div class="progress-bar">
-              <div class="fill" style="--pct:30%" data-index="1"></div>
-            </div>
+            <div class="progress-bar"><div class="fill" style="--pct:30%" data-index="1"></div></div>
           </div>
           <div class="progress-item">
             <span class="label">MLE Intern @ NASA ARC</span>
-            <div class="progress-bar">
-              <div class="fill" style="--pct:100%" data-index="2"></div>
-            </div>
+            <div class="progress-bar"><div class="fill" style="--pct:100%" data-index="2"></div></div>
           </div>
         </div>
+
+        <!-- Right: Image Slider (replaces Mississauga News card) -->
         <div class="dashboard-featured">
-          <div class="featured-card">
-            <img src="assets/images/virtrolio-logo.svg" alt="Virtrolio Logo" />
-            <div class="info">
-              <small>FEATURED</small>
-              <h3>virtrolio</h3>
-              <p>We're on Mississauga News! Check us out!</p>
+          <div class="image-slider">
+            <button class="prev-btn" aria-label="Previous image">&larr;</button>
+            <div class="slides">
+              <img src="assets/images/websitepic1.jpg" alt="Steven 1" class="active" />
+              <img src="assets/images/image5.jpg" alt="Steven 2" />
+              <img src="assets/images/websitepic3.jpg" alt="Steven 3" />
             </div>
+            <button class="next-btn" aria-label="Next image">&rarr;</button>
           </div>
         </div>
       </div>
@@ -135,7 +133,6 @@
             <li style="color:#2980B9">SQL</li>
           </ul>
         </div>
-    
         <!-- TECHNOLOGIES -->
         <div class="skill-category">
           <h3>Technologies</h3>
@@ -151,7 +148,6 @@
             <li style="color:#A82FF0">Qt</li>
           </ul>
         </div>
-    
         <!-- CREATIVE -->
         <div class="skill-category">
           <h3>Creative</h3>
@@ -165,7 +161,6 @@
             <li style="color:#D24726">MS PowerPoint</li>
           </ul>
         </div>
-    
         <!-- DEV TOOLS -->
         <div class="skill-category">
           <h3>Dev Tools</h3>
@@ -177,17 +172,28 @@
         </div>
       </div>
     </section>
-    
 
     <!-- RÉSUMÉ -->
-    <section id="resume">
-      <h2>Résumé</h2>
-      <div class="card-grid">
-        <div class="card">Toybox Icons</div>
-        <div class="card">YouTube</div>
-        <div class="card">Spacewalk</div>
-      </div>
-    </section>
+<section id="resume">
+  <h2>Résumé</h2>
+  <div class="card-grid">
+    <!-- Toybox Icons Card -->
+    <div class="card">
+      <img src="assets/images/scale.png" alt="Toybox Icons Logo" />
+    </div>
+
+    <!-- YouTube Card -->
+    <div class="card">
+      <img src="assets/images/capitalone2.png" alt="YouTube Logo" />
+    </div>
+
+    <!-- Spacewalk Card -->
+    <div class="card">
+      <img src="assets/images/nasa4.png" alt="Spacewalk Logo" />
+    </div>
+  </div>
+</section>
+
 
     <!-- ART -->
     <section id="art">
@@ -208,6 +214,7 @@
     </section>
   </main>
 
+  <!-- Three.js spinning-top & theme toggle + slider script -->
   <script type="module" src="./app.js"></script>
 </body>
 </html>
