@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Steven Lin | Portfolio</title>
+
+  <!-- import‐map for ES modules (three + GLTFLoader) -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js",
+      "three/examples/jsm/loaders/GLTFLoader.js": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/loaders/GLTFLoader.js"
+    }
+  }
+  </script>
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?
+      family=Inter:wght@300;400;600&
+      family=Nunito:wght@300;400;600&
+      family=Playfair+Display:wght@700&
+      display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+
+  <!-- YOUR MAIN STYLESHEET (fixed path!) -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+  <!-- MODE TOGGLE -->
+  <button id="mode-toggle" aria-label="Toggle light/dark mode">
+    <svg id="mode-icon" xmlns="http://www.w3.org/2000/svg"
+         fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 3v2m0 14v2m9-9h-2M5 12H3
+               m15.364-6.364l-1.414 1.414
+               M6.05 17.95l-1.414 1.414
+               M17.95 17.95l-1.414-1.414
+               M6.05 6.05L4.636 7.464
+               M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+    </svg>
+  </button>
+
+  <!-- SOCIAL SIDEBAR -->
+  <nav class="social-nav">
+    <ul>
+      <li><a href="https://github.com/sstevenlin" aria-label="GitHub"><i class="fa-brands fa-github"></i></a></li>
+      <li><a href="https://linkedin.com/in/steven-lin-" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a></li>
+      <li><a href="https://instagram.com/sstevenlin" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
+      <li><a href="mailto:sl3484@cornell.edu" aria-label="Email"><i class="fa-solid fa-envelope"></i></a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <header id="hero">
+    <div id="hero-canvas"></div>
+    <h1 class="hero-title">Steven Lin</h1>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main>
+    <!-- INTRO -->
+    <section id="intro">
+      <h2>Hello</h2>
+      <p>
+        I’m Steven. I’m a CS &amp; Math major at Cornell University and a current
+        SWE Intern @ Capital One. Previously a MLE Intern @ NASA; interested in
+        theoretical machine learning. In my spare time I enjoy basketball,
+        volleyball, working out, hiking, and reminiscing. Welcome to my page.
+      </p>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard">
+      <h2>Dashboard</h2>
+      <div class="dashboard-inner">
+        <div class="dashboard-bars">
+          <div class="progress-item">
+            <span class="label">SWE Intern @ Capital One</span>
+            <div class="progress-bar">
+              <div class="fill" style="--pct:50%" data-index="0"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <span class="label">Bachelor’s of CS &amp; Math</span>
+            <div class="progress-bar">
+              <div class="fill" style="--pct:30%" data-index="1"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <span class="label">MLE Intern @ NASA ARC</span>
+            <div class="progress-bar">
+              <div class="fill" style="--pct:100%" data-index="2"></div>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard-featured">
+          <div class="featured-card">
+            <img src="assets/images/virtrolio-logo.svg" alt="Virtrolio Logo" />
+            <div class="info">
+              <small>FEATURED</small>
+              <h3>virtrolio</h3>
+              <p>We're on Mississauga News! Check us out!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <h2>Skills</h2>
+      <div class="skill-grid">
+        <!-- LANGUAGES -->
+        <div class="skill-category">
+          <h3>Languages</h3>
+          <ul class="tags">
+            <li style="color:#007ACC">TypeScript</li>
+            <li style="color:#F0DB4F">JavaScript</li>
+            <li style="color:#3572A5">Python</li>
+            <li style="color:#A074C4">C++</li>
+            <li style="color:#00ADD8">Go</li>
+            <li style="color:#4F5D95">Bash</li>
+            <li style="color:#E34F26">HTML</li>
+            <li style="color:#264DE4">CSS</li>
+            <li style="color:#2980B9">SQL</li>
+          </ul>
+        </div>
+    
+        <!-- TECHNOLOGIES -->
+        <div class="skill-category">
+          <h3>Technologies</h3>
+          <ul class="tags">
+            <li style="color:#61DAFB">React</li>
+            <li style="color:#DD0031">Angular</li>
+            <li style="color:#9561E2">LitElement</li>
+            <li style="color:#F7DF1E">Three.js</li>
+            <li style="color:#68A063">Node.js</li>
+            <li style="color:#F7DF1E">Express</li>
+            <li style="color:#C21325">Jest</li>
+            <li style="color:#000000">Unity</li>
+            <li style="color:#A82FF0">Qt</li>
+          </ul>
+        </div>
+    
+        <!-- CREATIVE -->
+        <div class="skill-category">
+          <h3>Creative</h3>
+          <ul class="tags">
+            <li style="color:#F24E1E">Figma</li>
+            <li style="color:#FF9A00">Illustrator</li>
+            <li style="color:#2E2EFF">Procreate</li>
+            <li style="color:#8B5CF6">Houdini</li>
+            <li style="color:#FF5CAB">Motion 5</li>
+            <li style="color:#EC4C47">Autodesk Inventor</li>
+            <li style="color:#D24726">MS PowerPoint</li>
+          </ul>
+        </div>
+    
+        <!-- DEV TOOLS -->
+        <div class="skill-category">
+          <h3>Dev Tools</h3>
+          <ul class="tags">
+            <li style="color:#F14E32">Git</li>
+            <li style="color:#007ACC">VSCode</li>
+            <li style="color:#FF6A00">Postman</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    
+
+    <!-- RÉSUMÉ -->
+    <section id="resume">
+      <h2>Résumé</h2>
+      <div class="card-grid">
+        <div class="card">Toybox Icons</div>
+        <div class="card">YouTube</div>
+        <div class="card">Spacewalk</div>
+      </div>
+    </section>
+
+    <!-- ART -->
+    <section id="art">
+      <h2>Art</h2>
+      <div class="card-grid">
+        <div class="card"><img src="assets/images/art1.jpg" alt="Art 1" /></div>
+        <div class="card"><img src="assets/images/art2.jpg" alt="Art 2" /></div>
+      </div>
+    </section>
+
+    <!-- PHOTOS -->
+    <section id="photos">
+      <h2>Photos</h2>
+      <div class="card-grid">
+        <div class="card"><img src="assets/images/photo1.jpg" alt="Photo 1" /></div>
+        <div class="card"><img src="assets/images/photo2.jpg" alt="Photo 2" /></div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
