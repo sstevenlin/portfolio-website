@@ -15,8 +15,7 @@
   padding: 0;
   box-sizing: border-box;
 }
-html,
-body {
+html, body {
   height: 100%;
 }
 body {
@@ -43,17 +42,9 @@ body.dark-mode {
   z-index: 2000;
   transition: color 0.3s;
 }
-#mode-toggle:hover {
-  color: var(--accent-color);
-}
-body.dark-mode #mode-toggle {
-  color: var(--text-color-dark);
-}
-#mode-icon {
-  width: 2rem;
-  height: 2rem;
-  display: block;
-}
+#mode-toggle:hover { color: var(--accent-color); }
+body.dark-mode #mode-toggle { color: var(--text-color-dark); }
+#mode-icon { width: 2rem; height: 2rem; display: block; }
 
 /* ─── SOCIAL SIDEBAR ─── */
 .social-nav {
@@ -63,25 +54,16 @@ body.dark-mode #mode-toggle {
   transform: translateY(-50%);
   z-index: 1;
 }
-.social-nav ul {
-  list-style: none;
-}
-.social-nav li {
-  margin: 1rem 0;
-}
+.social-nav ul { list-style: none; }
+.social-nav li { margin: 1rem 0; }
 .social-nav a {
   font-size: 2rem;
   color: var(--text-color);
   text-decoration: none;
   transition: color 0.3s, transform 0.15s;
 }
-.social-nav a:hover {
-  color: var(--accent-color);
-  transform: scale(1.2);
-}
-body.dark-mode .social-nav a {
-  color: var(--text-color-dark);
-}
+.social-nav a:hover { color: var(--accent-color); transform: scale(1.2); }
+body.dark-mode .social-nav a { color: var(--text-color-dark); }
 
 /* ─── HERO & CANVAS ─── */
 #hero {
@@ -94,15 +76,11 @@ body.dark-mode .social-nav a {
   justify-content: center;
   transition: background 0.3s;
 }
-body.dark-mode #hero {
-  background: var(--hero-bg-dark);
-}
+body.dark-mode #hero { background: var(--hero-bg-dark); }
 #hero-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: 0;
   pointer-events: none;
 }
@@ -122,9 +100,7 @@ main {
   margin: 0 auto;
   padding: 2rem 1rem;
 }
-section {
-  margin-bottom: 4rem;
-}
+section { margin-bottom: 4rem; }
 section h2 {
   font-size: 2rem;
   margin-bottom: 1rem;
@@ -139,35 +115,26 @@ section h2 {
   line-height: 1.4;
 }
 
-/* ─── DASHBOARD LAYOUT ─── */
+/* ─── DASHBOARD (grid with fixed columns) ─── */
 #dashboard {
   max-width: 1000px;
   margin: 0 auto;
   padding-bottom: 4rem;
 }
-#dashboard h2 {
-  text-align: center;
-}
+#dashboard h2 { text-align: center; }
 
-/* position-container for absolute slider */
 .dashboard-inner {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 400px 350px; /* bars col, photo col */
   gap: 2rem;
-  position: relative; /* make this the containing block */
   align-items: start;
 }
 
 /* ─── PROGRESS BARS ─── */
-.dashboard-bars {
-  margin-right: 320px; /* leave room for the absolute slider */
-}
-.progress-item {
-  margin-bottom: 1.5rem;
-}
+.dashboard-bars { /* no manual margins needed */ }
+.progress-item { margin-bottom: 1.5rem; }
 .progress-bar {
-  width: 400px;       /* shorter fixed length */
-  max-width: 100%;
+  width: 100%;        /* full width of its 400px column */
   height: 1rem;
   background: #e0e0e0;
   border-radius: 0.75rem;
@@ -191,49 +158,21 @@ section h2 {
 .fill[data-index="1"] { --fill-color: #673ab7; }
 .fill[data-index="2"] { --fill-color: #2196f3; }
 
-/* ─── IMAGE SLIDER (absolute) ─── */
+/* ─── STATIC PROFILE PHOTO ─── */
 .dashboard-featured {
-  position: absolute;
-  /* pull it up by 2rem and left by 1rem */
-  top: -5rem;
-  right: 2rem;
-  width: 375px;   /* your slider width */
-  height: 375px;  /* your slider height */
-}
-.image-slider {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  width: 450px;
+  height: 450px;
   overflow: hidden;
-  border-radius: 0.5rem;
-  background: #f0f0f0;
 }
-.image-slider .slides img {
-  position: absolute;
-  top: 0;
-  left: 0;
+
+.profile-photo {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  display: block;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
-.image-slider .slides img.active {
-  opacity: 1;
-}
-.image-slider button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(255,255,255,0.8);
-  border: none;
-  padding: 0.4rem;
-  cursor: pointer;
-  font-size: 1rem;
-  z-index: 1;
-}
-.image-slider .prev-btn { left: 0.5rem; }
-.image-slider .next-btn { right: 0.5rem; }
 
 /* ─── SKILLS 2×2 GRID ─── */
 .skill-grid {
@@ -243,9 +182,7 @@ section h2 {
   margin-top: 1rem;
 }
 @media (max-width: 768px) {
-  .skill-grid {
-    grid-template-columns: 1fr;
-  }
+  .skill-grid { grid-template-columns: 1fr; }
 }
 .skill-category h3 {
   font-size: 1.25rem;
@@ -265,7 +202,7 @@ section h2 {
   font-weight: 500;
 }
 
-/* ─── OTHER SECTIONS (Resume, Art, Photos) ─── */
+/* ─── RESUME, ART, PHOTOS ─── */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -283,14 +220,17 @@ section h2 {
   max-width: 100%;
   height: auto;
   display: block;
-  margin: 0 auto;
+  margin: 0 auto 0.75rem;
+}
+.card h3 {
+  margin: 0.5rem 0 0.25rem;
 }
 body.dark-mode .card {
   background: #333;
   color: #eee;
 }
 
-/* ─── RESPONSIVE ─── */
+/* ─── RESPONSIVE ADJUSTMENTS ─── */
 @media (max-width: 768px) {
   .hero-title { font-size: 2.5rem; }
   #mode-toggle { top: 0.75rem; left: 0.75rem; }

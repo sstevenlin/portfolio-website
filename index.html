@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Steven Lin | Portfolio</title>
 
-  <!-- import-map for ES modules (three + GLTFLoader) -->
+  <!-- import‐map for ES modules (three.js + GLTFLoader) -->
   <script type="importmap">
   {
     "imports": {
@@ -71,7 +71,7 @@
         I’m Steven. I’m a CS &amp; Math major at Cornell University and a current
         SWE Intern @ Capital One. Previously a MLE Intern @ NASA; interested in
         theoretical machine learning. In my spare time I enjoy basketball,
-        volleyball, working out, hiking, and reminiscing. Welcome to my page.
+        poker, ragebaiting, hiking, and reminiscing. Welcome to my page.
       </p>
     </section>
 
@@ -82,15 +82,15 @@
         <!-- Left: Progress Bars -->
         <div class="dashboard-bars">
           <div class="progress-item">
-            <span class="label">Incoming AI Intern @ ScaleAI</span>
-            <div class="progress-bar"><div class="fill" style="--pct:01%" data-index="0"></div></div>
+            <span class="label">Incoming AI Intern @ ScaleAI
+            <div class="progress-bar"><div class="fill" style="--pct:05%" data-index="0"></div></div>
           </div>
           <div class="progress-item">
             <span class="label">SWE Intern @ Capital One</span>
             <div class="progress-bar"><div class="fill" style="--pct:50%" data-index="0"></div></div>
           </div>
           <div class="progress-item">
-            <span class="label">Bachelor’s of CS &amp; Math</span>
+            <span class="label">Bachelor’s of Arts in CS &amp; Math</span>
             <div class="progress-bar"><div class="fill" style="--pct:30%" data-index="1"></div></div>
           </div>
           <div class="progress-item">
@@ -99,18 +99,30 @@
           </div>
         </div>
 
-        <!-- Right: Image Slider (replaces Mississauga News card) -->
+        <!-- Right: Single Profile Photo -->
         <div class="dashboard-featured">
-          <div class="image-slider">
-            <button class="prev-btn" aria-label="Previous image">&larr;</button>
-            <div class="slides">
-              <img src="assets/images/websitepic1.jpg" alt="Steven 1" class="active" />
-              <img src="assets/images/image5.jpg" alt="Steven 2" />
-              <img src="assets/images/websitepic3.jpg" alt="Steven 3" />
-            </div>
-            <button class="next-btn" aria-label="Next image">&rarr;</button>
-          </div>
+          <img
+            src="assets/images/websitepic3.jpg"
+            alt="Steven Lin"
+            class="profile-photo"
+          />
         </div>
+      </div>
+    </section>
+
+    <!-- RÉSUMÉ -->
+    <section id="resume">
+      <h2>Experience</h2>
+      <div class="card-grid">
+        <div class="card">
+          <img src="assets/images/scale.png" alt="Toybox Icons Logo" />
+        </div>
+        <div class="card">
+          <img src="assets/images/capitalone2.png" alt="YouTube Logo" />
+        </div>
+        <div class="card">
+          <img src="assets/images/nasa2.png" alt="Spacewalk Logo" />
+                        </div>
       </div>
     </section>
 
@@ -133,6 +145,7 @@
             <li style="color:#2980B9">SQL</li>
           </ul>
         </div>
+
         <!-- TECHNOLOGIES -->
         <div class="skill-category">
           <h3>Technologies</h3>
@@ -148,6 +161,7 @@
             <li style="color:#A82FF0">Qt</li>
           </ul>
         </div>
+
         <!-- CREATIVE -->
         <div class="skill-category">
           <h3>Creative</h3>
@@ -161,6 +175,7 @@
             <li style="color:#D24726">MS PowerPoint</li>
           </ul>
         </div>
+
         <!-- DEV TOOLS -->
         <div class="skill-category">
           <h3>Dev Tools</h3>
@@ -172,28 +187,6 @@
         </div>
       </div>
     </section>
-
-    <!-- RÉSUMÉ -->
-<section id="resume">
-  <h2>Résumé</h2>
-  <div class="card-grid">
-    <!-- Toybox Icons Card -->
-    <div class="card">
-      <img src="assets/images/scale.png" alt="Toybox Icons Logo" />
-    </div>
-
-    <!-- YouTube Card -->
-    <div class="card">
-      <img src="assets/images/capitalone2.png" alt="YouTube Logo" />
-    </div>
-
-    <!-- Spacewalk Card -->
-    <div class="card">
-      <img src="assets/images/nasa4.png" alt="Spacewalk Logo" />
-    </div>
-  </div>
-</section>
-
 
     <!-- ART -->
     <section id="art">
@@ -214,7 +207,7 @@
     </section>
   </main>
 
-  <!-- Three.js spinning-top & theme toggle + slider script -->
+  <!-- Three.js spinning-top & theme toggle script -->
   <script type="module" src="./app.js"></script>
 </body>
 </html>
