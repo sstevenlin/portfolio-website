@@ -21,6 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
     iconSvg.innerHTML = isDark ? moonSVG : sunSVG;
   });
 
+const birthDate = new Date('2006-03-05T09:30:00');  
+
+function updateAge() {
+  const now = new Date();
+  const msPerYear = 365.2425 * 24 * 60 * 60 * 1000;
+  const age = (now - birthDate) / msPerYear;
+  const el = document.getElementById('age-display');
+  if (el) el.textContent = age.toFixed(9);
+  requestAnimationFrame(updateAge);
+}
+
+requestAnimationFrame(updateAge);
+
+
   // Three.js setup
   let container = document.getElementById('hero-canvas');
   if (!container) {

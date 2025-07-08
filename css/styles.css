@@ -115,6 +115,20 @@ section h2 {
   line-height: 1.4;
 }
 
+
+#age-display {
+  display: inline-block;
+  /* never wrap */
+  white-space: nowrap;
+  /* reserve space for up to ~12 characters (adjust as needed) */
+  min-width: 12ch;
+  /* monospace digits so they don’t jitter in width */
+  font-family: monospace;
+  font-variant-numeric: tabular-nums;
+  /* keep the digits right-aligned inside that box */
+  text-align: right;
+}
+
 /* ─── DASHBOARD (grid with fixed columns) ─── */
 #dashboard {
   max-width: 1000px;
@@ -160,8 +174,8 @@ section h2 {
 
 /* ─── STATIC PROFILE PHOTO ─── */
 .dashboard-featured {
-  width: 450px;
-  height: 450px;
+  width: 440;
+  height: 350px;
   overflow: hidden;
 }
 
@@ -240,37 +254,4 @@ body.dark-mode .card {
 @media (max-width: 480px) {
   .hero-title { font-size: 2rem; }
   #mode-toggle, .social-nav { display: none; }
-}
-
-/* DARK MODE OVERWRITES */
-body.dark-mode {
-  background: var(--bg-color-dark);
-  color: var(--text-color-dark);
-}
-
-body.dark-mode nav.social-nav {
-  /* make the sidebar icons sit on dark bg */
-  /* nav container doesn’t have a background itself, so this
-     will sit over the dark body behind it */
-}
-
-body.dark-mode main {
-  /* if you ever gave main or sections a white background */
-  background: transparent;
-}
-
-/* Cards (Resume, Art, Photos) */
-body.dark-mode .card {
-  background: #222;
-  color: #eee;
-}
-
-/* Progress bars labels */
-body.dark-mode .label {
-  color: #ddd;
-}
-
-/* Any other white-background containers you have */
-body.dark-mode section {
-  background: transparent;
 }
