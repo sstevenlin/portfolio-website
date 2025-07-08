@@ -241,3 +241,36 @@ body.dark-mode .card {
   .hero-title { font-size: 2rem; }
   #mode-toggle, .social-nav { display: none; }
 }
+
+/* DARK MODE OVERWRITES */
+body.dark-mode {
+  background: var(--bg-color-dark);
+  color: var(--text-color-dark);
+}
+
+body.dark-mode nav.social-nav {
+  /* make the sidebar icons sit on dark bg */
+  /* nav container doesn’t have a background itself, so this
+     will sit over the dark body behind it */
+}
+
+body.dark-mode main {
+  /* if you ever gave main or sections a white background */
+  background: transparent;
+}
+
+/* Cards (Resume, Art, Photos) */
+body.dark-mode .card {
+  background: #222;
+  color: #eee;
+}
+
+/* Progress bars labels */
+body.dark-mode .label {
+  color: #ddd;
+}
+
+/* Any other white-background containers you have */
+body.dark-mode section {
+  background: transparent;
+}
