@@ -6,7 +6,58 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Light/Dark Toggle (unchanged)…
+  // Navigation functionality
+  const nav = document.getElementById('main-nav');
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const navMenu = document.querySelector('.nav-menu');
+  const navLinks = document.querySelectorAll('.nav-link');
+  
+  // Show navigation on scroll
+  let lastScrollY = window.scrollY;
+  window.addEventListener('scroll', () => {
+    const currentScrollY = window.scrollY;
+    
+    if (currentScrollY > 100) {
+      nav.classList.add('visible');
+    } else {
+      nav.classList.remove('visible');
+    }
+    
+    lastScrollY = currentScrollY;
+  });
+  
+  // Mobile menu toggle
+  mobileMenuToggle.addEventListener('click', () => {
+    mobileMenuToggle.classList.toggle('active');
+    navMenu.classList.toggle('active');
+  });
+  
+  // Close mobile menu when clicking on links
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenuToggle.classList.remove('active');
+      navMenu.classList.remove('active');
+    });
+  });
+  
+  // Smooth scrolling for navigation links
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href');
+      const targetSection = document.querySelector(targetId);
+      
+      if (targetSection) {
+        const offsetTop = targetSection.offsetTop - 80; // Account for nav height
+        window.scrollTo({
+          top: offsetTop,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+
+  // Light/Dark Toggle
   const toggleBtn = document.getElementById('mode-toggle');
   const iconSvg   = document.getElementById('mode-icon');
   const body      = document.body;
@@ -106,22 +157,24 @@ requestAnimationFrame(updateAge);
     camera.aspect = w/h;
     camera.updateProjectionMatrix();
   });
-});
 
-document.addEventListener('DOMContentLoaded', () => {
-  const slider = document.querySelector('.image-slider');
-  if (!slider) return;
-  const slides = slider.querySelectorAll('.slides img');
-  let idx = 0;
-
-  const show = newIndex => {
-    slides[idx].classList.remove('active');
-    idx = (newIndex + slides.length) % slides.length;
-    slides[idx].classList.add('active');
+  // Scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
   };
 
-  slider.querySelector('.prev-btn')
-    .addEventListener('click', () => show(idx - 1));
-  slider.querySelector('.next-btn')
-    .addEventListener('click', () => show(idx + 1));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate');
+      }
+    });
+  }, observerOptions);
+
+  // Observe all scroll sections
+  const scrollSections = document.querySelectorAll('.scroll-section');
+  scrollSections.forEach(section => {
+    observer.observe(section);
+  });
 });

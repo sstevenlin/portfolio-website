@@ -32,19 +32,37 @@
 </head>
 
 <body class="dark-mode">
-  <!-- MODE TOGGLE -->
-  <button id="mode-toggle" aria-label="Toggle light/dark mode">
-    <svg id="mode-icon" xmlns="http://www.w3.org/2000/svg"
-         fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 3v2m0 14v2m9-9h-2M5 12H3
-               m15.364-6.364l-1.414 1.414
-               M6.05 17.95l-1.414 1.414
-               M17.95 17.95l-1.414-1.414
-               M6.05 6.05L4.636 7.464
-               M12 8a4 4 0 100 8 4 4 0 000-8z"/>
-    </svg>
-  </button>
+  <!-- NAVIGATION -->
+  <nav id="main-nav" class="main-nav">
+    <div class="nav-container">
+      <a href="#hero" class="nav-logo">Steven Lin</a>
+      <ul class="nav-menu">
+        <li><a href="#intro" class="nav-link">About</a></li>
+        <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
+        <li><a href="#resume" class="nav-link">Experience</a></li>
+        <li><a href="#skills" class="nav-link">Skills</a></li>
+      </ul>
+      <div class="nav-controls">
+        <button id="mode-toggle" aria-label="Toggle light/dark mode">
+          <svg id="mode-icon" xmlns="http://www.w3.org/2000/svg"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 3v2m0 14v2m9-9h-2M5 12H3
+                     m15.364-6.364l-1.414 1.414
+                     M6.05 17.95l-1.414 1.414
+                     M17.95 17.95l-1.414-1.414
+                     M6.05 6.05L4.636 7.464
+                     M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+          </svg>
+        </button>
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
 
   <!-- SOCIAL SIDEBAR -->
   <nav class="social-nav">
@@ -65,33 +83,33 @@
   <!-- MAIN CONTENT -->
   <main>
     <!-- INTRO -->
-    <section id="intro">
+    <section id="intro" class="scroll-section" data-animate="fade-up">
       <h2>Hello</h2>
       <p>
-        I’m Steven, a <span id="age-display"></span> year old critical philospher. I’m a CS &amp; Math major at Cornell and a current
-        SWE Intern @ Capital One. Previously ML Intern @ NASA; interested in
+        I'm Steven, a <span id="age-display"></span> year old critical philosopher. I'm a CS &amp; Math major at Cornell and a current
+        AI Intern @ ScaleAI. Previously SWE Intern @ Capital One, ML Intern @ NASA; interested in
         theoretical machine learning. In my spare time I enjoy basketball,
         poker, ragebaiting, hiking, and reminiscing. Welcome to my page.
       </p>
     </section>
 
     <!-- DASHBOARD -->
-    <section id="dashboard">
+    <section id="dashboard" class="scroll-section" data-animate="fade-up">
       <h2>Dashboard</h2>
       <div class="dashboard-inner">
         <!-- Left: Progress Bars -->
         <div class="dashboard-bars">
           <div class="progress-item">
-            <span class="label">Incoming AI Intern @ ScaleAI</span>
-            <div class="progress-bar"><div class="fill" style="--pct:05%" data-index="0"></div></div>
+            <span class="label">Bachelor's of Arts in CS &amp; Math @ Cornell</span>
+            <div class="progress-bar"><div class="fill" style="--pct:30%" data-index="1"></div></div>
+          </div>
+          <div class="progress-item">
+            <span class="label">AI Intern @ ScaleAI</span>
+            <div class="progress-bar"><div class="fill" style="--pct:40%" data-index="0"></div></div>
           </div>
           <div class="progress-item">
             <span class="label">SWE Intern @ Capital One</span>
-            <div class="progress-bar"><div class="fill" style="--pct:50%" data-index="0"></div></div>
-          </div>
-          <div class="progress-item">
-            <span class="label">Bachelor’s of Arts in CS &amp; Math</span>
-            <div class="progress-bar"><div class="fill" style="--pct:30%" data-index="1"></div></div>
+            <div class="progress-bar"><div class="fill" style="--pct:100%" data-index="0"></div></div>
           </div>
           <div class="progress-item">
             <span class="label">MLE Intern @ NASA ARC</span>
@@ -111,7 +129,7 @@
     </section>
 
     <!-- RÉSUMÉ -->
-    <section id="resume">
+    <section id="resume" class="scroll-section" data-animate="fade-up">
       <h2>Experience</h2>
       <div class="card-grid">
         <div class="card">
@@ -127,7 +145,7 @@
     </section>
 
     <!-- SKILLS -->
-    <section id="skills">
+    <section id="skills" class="scroll-section" data-animate="fade-up">
       <h2>Skills</h2>
       <div class="skill-grid">
         <!-- LANGUAGES -->
@@ -188,23 +206,6 @@
       </div>
     </section>
 
-    <!-- ART -->
-    <section id="art">
-      <h2>Art</h2>
-      <div class="card-grid">
-        <div class="card"><img src="assets/images/art1.jpg" alt="Art 1" /></div>
-        <div class="card"><img src="assets/images/art2.jpg" alt="Art 2" /></div>
-      </div>
-    </section>
-
-    <!-- PHOTOS -->
-    <section id="photos">
-      <h2>Photos</h2>
-      <div class="card-grid">
-        <div class="card"><img src="assets/images/photo1.jpg" alt="Photo 1" /></div>
-        <div class="card"><img src="assets/images/photo2.jpg" alt="Photo 2" /></div>
-      </div>
-    </section>
   </main>
 
   <!-- Three.js spinning-top & theme toggle script -->
