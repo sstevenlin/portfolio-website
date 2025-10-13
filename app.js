@@ -119,7 +119,7 @@ class PokemonPortfolioGame {
         }
       } else if (furnitureName === 'desk') {
         // Special case for desk - expand interaction zone to the left and higher
-        if (charPos.x >= 10 && charPos.x <= bounds.x2 && charPos.y >= 2 && charPos.y <= bounds.y2) {
+        if (charPos.x >= 18 && charPos.x <= bounds.x2 && charPos.y >= 2 && charPos.y <= bounds.y2) {
           nearbyFurniture.push({
             type: bounds.type,
             furniture: furnitureName,
