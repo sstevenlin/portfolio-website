@@ -3,25 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Steven Lin | Portfolio</title>
+  <title>Steven Lin | Interactive Portfolio</title>
 
-  <!-- import‐map for ES modules (three.js + GLTFLoader) -->
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js",
-      "three/examples/jsm/loaders/GLTFLoader.js": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/loaders/GLTFLoader.js"
-    }
-  }
-  </script>
-
-  <!-- Google Fonts: Inter, Nunito & Playfair Display -->
+  <!-- Google Fonts -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Nunito:wght@300;400;600&family=Playfair+Display:wght@700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
     rel="stylesheet"
   />
 
-  <!-- Font Awesome for social icons -->
+  <!-- Font Awesome for icons -->
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -31,184 +21,220 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 
-<body class="dark-mode">
-  <!-- NAVIGATION -->
-  <nav id="main-nav" class="main-nav">
-    <div class="nav-container">
-      <a href="#hero" class="nav-logo">Steven Lin</a>
-      <ul class="nav-menu">
-        <li><a href="#intro" class="nav-link">About</a></li>
-        <li><a href="#dashboard" class="nav-link">Dashboard</a></li>
-        <li><a href="#resume" class="nav-link">Experience</a></li>
-        <li><a href="#skills" class="nav-link">Skills</a></li>
-      </ul>
-      <div class="nav-controls">
-        <button id="mode-toggle" aria-label="Toggle light/dark mode">
-          <svg id="mode-icon" xmlns="http://www.w3.org/2000/svg"
-               fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 3v2m0 14v2m9-9h-2M5 12H3
-                     m15.364-6.364l-1.414 1.414
-                     M6.05 17.95l-1.414 1.414
-                     M17.95 17.95l-1.414-1.414
-                     M6.05 6.05L4.636 7.464
-                     M12 8a4 4 0 100 8 4 4 0 000-8z"/>
-          </svg>
-        </button>
-        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle mobile menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+<body>
+  <!-- GAME UI -->
+  <div class="game-container">
+    <!-- GAME HUD -->
+    <div class="game-hud">
+      <div class="hud-left">
+        <div class="player-info">
+          <div class="player-name">Steven Lin</div>
+          <div class="player-title">CS & Math Student @ Cornell</div>
+        </div>
+      </div>
+      <div class="hud-center">
+        <div class="instructions">
+          Use <span class="key">WASD</span> or <span class="key">Arrow Keys</span> to move<br>
+          Press <span class="key">SPACE</span> near furniture to interact<br>
+          <span class="click-hint">Click furniture to walk there automatically</span>
+        </div>
+      </div>
+      <div class="hud-right">
+        <div class="social-links">
+          <a href="https://github.com/sstevenlin" target="_blank" title="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://linkedin.com/in/steven-lin-" target="_blank" title="LinkedIn">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="https://instagram.com/sstevenlin" target="_blank" title="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="mailto:sl3484@cornell.edu" title="Email">
+            <i class="fas fa-envelope"></i>
+          </a>
+        </div>
       </div>
     </div>
-  </nav>
 
-  <!-- SOCIAL SIDEBAR -->
-  <nav class="social-nav">
-    <ul>
-      <li><a href="https://github.com/sstevenlin" aria-label="GitHub"><i class="fa-brands fa-github"></i></a></li>
-      <li><a href="https://linkedin.com/in/steven-lin-" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a></li>
-      <li><a href="https://instagram.com/sstevenlin" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a></li>
-      <li><a href="mailto:sl3484@cornell.edu" aria-label="Email"><i class="fa-solid fa-envelope"></i></a></li>
-    </ul>
-  </nav>
-
-  <!-- HERO -->
-  <header id="hero">
-    <div id="hero-canvas"></div>
-    <h1 class="hero-title">Steven Lin</h1>
-  </header>
-
-  <!-- MAIN CONTENT -->
-  <main>
-    <!-- INTRO -->
-    <section id="intro" class="scroll-section" data-animate="fade-up">
-      <h2>Hello</h2>
-      <p>
-        I'm Steven, a <span id="age-display"></span> year old critical philosopher. I'm a CS &amp; Math major at Cornell and a current
-        AI Intern @ ScaleAI. Previously SWE Intern @ Capital One, ML Intern @ NASA; interested in
-        theoretical machine learning. In my spare time I enjoy basketball,
-        poker, ragebaiting, hiking, and reminiscing. Welcome to my page.
-      </p>
-    </section>
-
-    <!-- DASHBOARD -->
-    <section id="dashboard" class="scroll-section" data-animate="fade-up">
-      <h2>Dashboard</h2>
-      <div class="dashboard-inner">
-        <!-- Left: Progress Bars -->
-        <div class="dashboard-bars">
-          <div class="progress-item">
-            <span class="label">Bachelor's of Arts in CS &amp; Math @ Cornell</span>
-            <div class="progress-bar"><div class="fill" style="--pct:30%" data-index="1"></div></div>
+    <!-- GAME WORLD -->
+    <div class="game-world">
+      <div class="pokemon-room">
+        <!-- Room Floor -->
+        <div class="room-floor" style="grid-column: 1/21; grid-row: 1/16;"></div>
+        
+        <!-- Room Walls -->
+        <div class="room-wall wall-top" style="grid-column: 1/21; grid-row: 1/2;"></div>
+        <div class="room-wall wall-bottom" style="grid-column: 1/21; grid-row: 15/16;"></div>
+        <div class="room-wall wall-left" style="grid-column: 1/2; grid-row: 1/16;"></div>
+        <div class="room-wall wall-right" style="grid-column: 20/21; grid-row: 1/16;"></div>
+        
+        <!-- Furniture -->
+        <!-- Bed -->
+        <div class="furniture bed" style="grid-column: 2/6; grid-row: 3/7;">
+          <div class="furniture-sprite"></div>
+          <div class="furniture-label">Bed</div>
+          <div class="bed-sheets"></div>
+          <div class="pillow-1"></div>
+          <div class="pillow-2"></div>
+          <div class="headboard"></div>
+          <div class="bed-leg-1"></div>
+          <div class="bed-leg-2"></div>
+          <div class="bed-leg-3"></div>
+        </div>
+        
+        <!-- Desk/Table -->
+        <div class="furniture desk" style="grid-column: 15/19; grid-row: 3/6;">
+          <div class="furniture-sprite"></div>
+          <div class="furniture-label">Desk</div>
+          <div class="desk-lamp">
+            <div class="lamp-shade"></div>
           </div>
-          <div class="progress-item">
-            <span class="label">AI Intern @ ScaleAI</span>
-            <div class="progress-bar"><div class="fill" style="--pct:40%" data-index="0"></div></div>
+          <div class="monitor">
+            <div class="monitor-screen"></div>
+            <div class="monitor-stand"></div>
           </div>
-          <div class="progress-item">
-            <span class="label">SWE Intern @ Capital One</span>
-            <div class="progress-bar"><div class="fill" style="--pct:100%" data-index="0"></div></div>
+          <div class="chair">
+            <div class="chair-back"></div>
           </div>
-          <div class="progress-item">
-            <span class="label">MLE Intern @ NASA ARC</span>
-            <div class="progress-bar"><div class="fill" style="--pct:100%" data-index="2"></div></div>
+          <div class="drawer-handle-1"></div>
+          <div class="drawer-handle-2"></div>
+        </div>
+        
+        <!-- Closet -->
+        <div class="furniture closet" style="grid-column: 2/5; grid-row: 10/14;">
+          <div class="furniture-sprite"></div>
+          <div class="furniture-label">Closet</div>
+          <div class="closet-door-left">
+            <div class="door-handle-left"></div>
+          </div>
+          <div class="closet-door-right">
+            <div class="door-handle-right"></div>
+          </div>
+          <div class="shelf-1"></div>
+          <div class="shelf-2"></div>
+          <div class="shelf-3"></div>
+          <div class="clothes-hanger"></div>
+          <div class="shirt"></div>
+          <div class="pants"></div>
+        </div>
+        
+        <!-- Music Player -->
+        <div class="furniture music-player" style="grid-column: 16/19; grid-row: 10/13;">
+          <div class="furniture-sprite"></div>
+          <div class="furniture-label">Music</div>
+          <div class="cd-tray">
+            <div class="cd-disc">
+              <div class="cd-center"></div>
+            </div>
+          </div>
+          <div class="volume-knob"></div>
+          <div class="play-button">
+            <div class="play-triangle"></div>
+          </div>
+          <div class="speaker-left">
+            <div class="speaker-hole"></div>
+          </div>
+          <div class="speaker-right">
+            <div class="speaker-hole"></div>
+          </div>
+          <div class="led-display">
+            <div class="led-text">CD</div>
+          </div>
+        </div>
+        
+        <!-- Character -->
+        <div class="character" id="character" style="grid-column: 10; grid-row: 7;">
+          <div class="character-sprite">
+            <div class="head">
+              <div class="ear-left">
+                <div class="inner-ear-left"></div>
+              </div>
+              <div class="ear-right">
+                <div class="inner-ear-right"></div>
+              </div>
+              <div class="eye-left"></div>
+              <div class="eye-right"></div>
+              <div class="nose"></div>
+              <div class="mouth"></div>
+              <div class="whisker-left-1"></div>
+              <div class="whisker-left-2"></div>
+              <div class="whisker-right-1"></div>
+              <div class="whisker-right-2"></div>
+            </div>
+            <div class="body">
+              <div class="belly"></div>
+            </div>
+            <div class="tail"></div>
+            <div class="paw-left"></div>
+            <div class="paw-right"></div>
           </div>
         </div>
 
-        <!-- Right: Single Profile Photo -->
-        <div class="dashboard-featured">
-          <img
-            src="assets/images/websitepic3.jpg"
-            alt="Steven Lin"
-            class="profile-photo"
-          />
+        <!-- Interactive Zones (on furniture) -->
+        <div class="interactive-zone bed-zone" data-zone="about" style="grid-column: 2/6; grid-row: 3/7;"></div>
+        <div class="interactive-zone desk-zone" data-zone="experience" style="grid-column: 15/19; grid-row: 3/6;"></div>
+        <div class="interactive-zone closet-zone" data-zone="skills" style="grid-column: 2/5; grid-row: 10/14;"></div>
+        <div class="interactive-zone music-zone" data-zone="contact" style="grid-column: 16/19; grid-row: 10/13;"></div>
+
+        <!-- Room Decorations -->
+        <div class="room-decoration window" style="grid-column: 18/20; grid-row: 2/4;">🪟</div>
+        <div class="room-decoration lamp" style="grid-column: 8/10; grid-row: 2/4;">💡</div>
+        <div class="room-decoration plant" style="grid-column: 3/5; grid-row: 8/10;">🪴</div>
+        <div class="room-decoration books" style="grid-column: 10/12; grid-row: 10/12;">📚</div>
+        
+        <!-- Door -->
+        <div class="room-decoration door" style="grid-column: 1; grid-row: 7/9;">🚪</div>
+        
+        <!-- Dirty Clothes Piles -->
+        <div class="clothes-pile pile-1" style="grid-column: 7/9; grid-row: 6/8;">
+          <div class="clothes-item shirt-1"></div>
+          <div class="clothes-item pants-1"></div>
+          <div class="clothes-item sock-1"></div>
+          <div class="clothes-item sock-2"></div>
+        </div>
+        
+        <div class="clothes-pile pile-2" style="grid-column: 12/14; grid-row: 9/11;">
+          <div class="clothes-item hoodie-1"></div>
+          <div class="clothes-item jeans-1"></div>
+          <div class="clothes-item underwear-1"></div>
+        </div>
+        
+        <div class="clothes-pile pile-3" style="grid-column: 18/20; grid-row: 10/12;">
+          <div class="clothes-item tshirt-1"></div>
+          <div class="clothes-item shorts-1"></div>
+          <div class="clothes-item sock-3"></div>
+        </div>
+        
+        <div class="clothes-pile pile-4" style="grid-column: 3/5; grid-row: 7/9;">
+          <div class="clothes-item sweater-1"></div>
+          <div class="clothes-item sock-4"></div>
+          <div class="clothes-item sock-5"></div>
+        </div>
+        
+        <!-- Single scattered items -->
+        <div class="clothes-item single-shirt" style="grid-column: 8; grid-row: 2;"></div>
+        <div class="clothes-item single-pants" style="grid-column: 15; grid-row: 7;"></div>
+        <div class="clothes-item single-sock" style="grid-column: 6; grid-row: 11;"></div>
+        <div class="clothes-item single-hat" style="grid-column: 17; grid-row: 2;"></div>
+      </div>
+    </div>
+
+    <!-- MODAL SYSTEM -->
+    <div class="modal-overlay" id="modal-overlay">
+      <div class="modal-content" id="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title">Modal Title</h2>
+          <button class="modal-close" id="modal-close">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-body">
+          <!-- Content will be dynamically inserted here -->
         </div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- RÉSUMÉ -->
-    <section id="resume" class="scroll-section" data-animate="fade-up">
-      <h2>Experience</h2>
-      <div class="card-grid">
-        <div class="card">
-          <img src="assets/images/scale.png" alt="Toybox Icons Logo" />
-        </div>
-        <div class="card">
-          <img src="assets/images/capitalone2.png" alt="YouTube Logo" />
-        </div>
-        <div class="card">
-          <img src="assets/images/nasa2.png" alt="Spacewalk Logo" />
-                        </div>
-      </div>
-    </section>
-
-    <!-- SKILLS -->
-    <section id="skills" class="scroll-section" data-animate="fade-up">
-      <h2>Skills</h2>
-      <div class="skill-grid">
-        <!-- LANGUAGES -->
-        <div class="skill-category">
-          <h3>Languages</h3>
-          <ul class="tags">
-            <li style="color:#007ACC">Python</li>
-            <li style="color:#F0DB4F">Java</li>
-            <li style="color:#3572A5">C++</li>
-            <li style="color:#A074C4">TypeScript</li>
-            <li style="color:#00ADD8">Go</li>
-            <li style="color:#4F5D95">Bash</li>
-            <li style="color:#E34F26">HTML</li>
-            <li style="color:#264DE4">CSS</li>
-            <li style="color:#2980B9">SQL</li>
-          </ul>
-        </div>
-
-        <!-- TECHNOLOGIES -->
-        <div class="skill-category">
-          <h3>Technologies</h3>
-          <ul class="tags">
-            <li style="color:#61DAFB">React</li>
-            <li style="color:#DD0031">Angular</li>
-            <li style="color:#9561E2">Tensorflow</li>
-            <li style="color:#F7DF1E">Three.js</li>
-            <li style="color:#68A063">Node.js</li>
-            <li style="color:#F7DF1E">Machine Learning</li>
-            <li style="color:#C21325">Data Structures</li>
-            <li style="color:#000000">Flutter</li>
-            <li style="color:#A82FF0">Dart</li>
-          </ul>
-        </div>
-
-        <!-- CREATIVE -->
-        <div class="skill-category">
-          <h3>Creative</h3>
-          <ul class="tags">
-            <li style="color:#F24E1E">Figma</li>
-            <li style="color:#FF9A00">Illustrator</li>
-            <li style="color:#2E2EFF">Procreate</li>
-            <li style="color:#8B5CF6">Houdini</li>
-            <li style="color:#FF5CAB">Motion 5</li>
-            <li style="color:#EC4C47">Autodesk Inventor</li>
-            <li style="color:#D24726">MS PowerPoint</li>
-          </ul>
-        </div>
-
-        <!-- DEV TOOLS -->
-        <div class="skill-category">
-          <h3>Dev Tools</h3>
-          <ul class="tags">
-            <li style="color:#F14E32">Git</li>
-            <li style="color:#007ACC">VSCode</li>
-            <li style="color:#FF6A00">Postman</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Three.js spinning-top & theme toggle script -->
-  <script type="module" src="./app.js"></script>
+  <!-- Game Script -->
+  <script src="./app.js"></script>
 </body>
 </html>
