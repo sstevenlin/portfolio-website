@@ -13,10 +13,11 @@ class PokemonPortfolioGame {
     this.gridRows = 15;
     this.characterGridPos = { x: 10, y: 7 }; // Starting position - center of board
     this.isMoving = false;
-    this.keys = {};
-    this.moveCooldown = false;
-    
-    this.init();
+        this.keys = {};
+        this.moveCooldown = false;
+        this.audioContext = null;
+        
+        this.init();
   }
   
   init() {
@@ -28,6 +29,17 @@ class PokemonPortfolioGame {
   }
   
   setupEventListeners() {
+    // Initialize audio on first user interaction
+    const initAudioOnInteraction = () => {
+      this.initializeAudio();
+      // Remove these listeners after first interaction
+      document.removeEventListener('keydown', initAudioOnInteraction);
+      document.removeEventListener('click', initAudioOnInteraction);
+    };
+    
+    document.addEventListener('keydown', initAudioOnInteraction);
+    document.addEventListener('click', initAudioOnInteraction);
+    
     // Keyboard controls
     document.addEventListener('keydown', (e) => {
       if (this.moveCooldown) return;
@@ -406,23 +418,42 @@ class PokemonPortfolioGame {
   }
   
   playTone(frequency, duration) {
-    if (!window.AudioContext && !window.webkitAudioContext) return;
-    
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.value = frequency;
-    oscillator.type = 'square'; // Retro square wave
-    
-    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + duration);
+    // Only play sounds if audio context is already initialized (user has interacted)
+    if (!this.audioContext) {
+      return; // Silently fail if audio context not initialized
+    }
+
+    try {
+      const oscillator = this.audioContext.createOscillator();
+      const gainNode = this.audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(this.audioContext.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = 'square'; // Retro square wave
+      
+      gainNode.gain.setValueAtTime(0.1, this.audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+      
+      oscillator.start(this.audioContext.currentTime);
+      oscillator.stop(this.audioContext.currentTime + duration);
+    } catch (error) {
+      // Silently fail if audio context is not available
+      console.log('Audio not available:', error.message);
+    }
+  }
+
+  initializeAudio() {
+    // Initialize audio context on first user interaction
+    if (!this.audioContext) {
+      try {
+        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        console.log('Audio context initialized');
+      } catch (error) {
+        console.log('Audio context not supported');
+      }
+    }
   }
   
   getZoneContent(zoneType) {
@@ -642,6 +673,43 @@ class SpotifyPlayer {
     return await res.json();
   }
 
+  async fetchRecentlyPlayed() {
+    console.log('Fetching recently played tracks from Spotify...');
+    try {
+      // Try the recently played endpoint
+      const response = await this.fetchWebApi(
+        'v1/me/player/recently-played?limit=5', 'GET'
+      );
+      
+      console.log('Recently played API response:', response);
+      
+      // Check for error in response
+      if (response.error) {
+        console.error('Recently played API error:', response.error);
+        throw new Error(`Recently played API error: ${response.error.message}`);
+      }
+      
+      this.topTracks = response.items?.map(item => ({
+        name: item.track.name,
+        artist: item.track.artists.map(artist => artist.name).join(', '),
+        uri: item.track.uri,
+        album: item.track.album.name,
+        image: item.track.album.images[0]?.url,
+        playedAt: item.played_at
+      })) || [];
+      
+      console.log('Recently played tracks loaded:', this.topTracks);
+      
+      if (this.topTracks.length === 0) {
+        throw new Error('No recently played tracks found');
+      }
+    } catch (error) {
+      console.log('Recently played failed, falling back to top tracks:', error.message);
+      // Fallback to top tracks if recently played fails
+      await this.fetchTopTracks();
+    }
+  }
+
   async fetchTopTracks() {
     console.log('Fetching top tracks from Spotify (this week)...');
     // Get your top tracks from Spotify API for this week
@@ -649,7 +717,13 @@ class SpotifyPlayer {
       'v1/me/top/tracks?time_range=short_term&limit=5', 'GET'
     );
     
-    console.log('Spotify API response:', response);
+    console.log('Top tracks API response:', response);
+    
+    // Check for error in response
+    if (response.error) {
+      console.error('Spotify API error:', response.error);
+      throw new Error(`Spotify API error: ${response.error.message}`);
+    }
     
     this.topTracks = response.items?.map(track => ({
       name: track.name,

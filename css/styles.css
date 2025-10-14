@@ -2189,19 +2189,18 @@ html, body {
 /* Songs of the Week Section */
 .hud-left-center {
   position: absolute;
-  top: 20px;
+  top: 50%; /* Match the vertical position of controls */
   left: 35%; /* Position between Steven Lin (left) and center controls */
-  transform: translateX(-50%); /* Center the element itself */
+  transform: translate(-50%, -50%); /* Center both horizontally and vertically */
   z-index: 1000;
 }
 
 .songs-of-week {
-  background: rgba(0, 0, 0, 0.8);
-  border: 2px solid #4A90E2;
+  background: rgba(255, 255, 255, 0.9); /* Match controls background */
+  border: 2px solid #4A4A4A; /* Match controls border */
   border-radius: 8px;
   padding: 10px;
   min-width: 180px;
-  backdrop-filter: blur(4px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -2210,7 +2209,7 @@ html, body {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #4A90E2;
+  color: #4A4A4A; /* Match controls text color */
   font-family: 'JetBrains Mono', monospace;
   font-weight: 600;
   margin-bottom: 6px;
@@ -2219,13 +2218,14 @@ html, body {
 
 .songs-title i {
   font-size: 11px;
+  color: #4A90E2; /* Keep music icon blue */
   animation: music-pulse 2s ease-in-out infinite;
 }
 
 /* Current Song Display */
 .current-song {
   font-size: 11px;
-  color: #FFFFFF;
+  color: #4A4A4A; /* Match controls text color */
   font-family: 'JetBrains Mono', monospace;
   text-align: center;
 }
