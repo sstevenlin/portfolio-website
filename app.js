@@ -432,15 +432,15 @@ class PokemonPortfolioGame {
         body: `
           <div class="info-section">
             <h3>About Steven</h3>
-            <p>Hello! I'm Steven, a <span id="age-display">21</span> year old computer science student and critical philosopher.</p>
+            <p>Hello! I'm Steven, a <span id="age-display">19</span> year old computer science student and critical philosopher.</p>
             <p>Currently pursuing a Bachelor's degree in CS & Mathematics at Cornell University, with a passion for theoretical machine learning and AI research.</p>
             <p>Working as an AI Intern at ScaleAI, gaining hands-on experience with cutting-edge ML technologies and large-scale systems.</p>
-            <p>In my free time, I enjoy basketball, poker, hiking, and deep philosophical discussions. Always excited to tackle challenging problems!</p>
+            <p>In my free time, I enjoy basketball, poker, hiking, and ragebaiting. Am a big fan of problem solving.</p>
           </div>
           
           <div class="info-section">
             <h3>My Room, My Space</h3>
-            <p>This room represents my personal space - where I think, code, and unwind. Each piece of furniture tells a different part of my story.</p>
+            <p>This room represents my personal space - where I think and unwind. Each piece of furniture tells a different part of my story.</p>
             <p>Click around to explore different aspects of who I am and what I do!</p>
           </div>
         `
@@ -450,8 +450,8 @@ class PokemonPortfolioGame {
         body: `
           <div class="info-section">
             <h3>My Work Space</h3>
-            <p>This is where the magic happens! My desk is where I spend hours coding, researching, and building things that matter.</p>
-            <p>From late-night coding sessions to early morning research, this space has seen it all.</p>
+            <p>This is where the magic happens! Funnily enough, even though this is a desk, I rarely use my actual one in my dorm.</p>
+            <p>You can probably find my at the library or at a cafe. </p>
           </div>
           
           <div class="info-section">
@@ -467,14 +467,14 @@ class PokemonPortfolioGame {
             <div class="experience-item">
               <h4>Software Engineering Intern</h4>
               <div class="company">Capital One</div>
-              <div class="duration">Summer 2023</div>
-              <p>Built web applications and APIs using modern JavaScript frameworks. Contributed to large-scale financial software systems.</p>
+              <div class="duration">Summer 2025</div>
+              <p>Built a semantic search engine. Contributed to large-scale financial software systems.</p>
             </div>
             
             <div class="experience-item">
               <h4>Machine Learning Engineer Intern</h4>
               <div class="company">NASA Ames Research Center</div>
-              <div class="duration">Summer 2022</div>
+              <div class="duration">Spring 2025</div>
               <p>Researched ML algorithms for aerospace applications. Worked with satellite data and computer vision models for space missions.</p>
             </div>
           </div>
@@ -485,8 +485,8 @@ class PokemonPortfolioGame {
         body: `
           <div class="info-section">
             <h3>My Skills Closet</h3>
-            <p>This closet contains all my technical skills and abilities - the tools I use to build amazing things!</p>
-            <p>From programming languages to frameworks, this is my arsenal of knowledge.</p>
+            <p>This closet contains all my technical skills and abilities.</p>
+            <p>It contains programming languages and frameworks. But my greatest skill is ragebaiting people. </p>
           </div>
           
           <div class="info-section">
@@ -545,13 +545,35 @@ class PokemonPortfolioGame {
         body: `
           <div class="info-section">
             <h3>My Music Player</h3>
-            <p>Music is a big part of my life! I love listening to music while coding, studying, or just relaxing.</p>
-            <p>From classical to hip-hop, my playlist reflects my diverse interests and helps me stay focused.</p>
+            <p>Music is a big part of my life! I wake up playing music and I fall asleep to it.</p>
+            <p>My favorite artist of all time is Frank Ocean because he's the goat. But I listen to all genres 
+            from country to rap to everything in between.</p>
+            
+            <div class="spotify-player" id="spotify-player">
+              <div class="now-playing" id="now-playing">
+                <div class="track-info">
+                  <div class="track-name" id="track-name">Loading...</div>
+                  <div class="artist-name" id="artist-name">Loading...</div>
+                </div>
+                <div class="player-controls">
+                  <button id="prev-track" class="control-btn">⏮</button>
+                  <button id="play-pause" class="control-btn play-btn">▶</button>
+                  <button id="next-track" class="control-btn">⏭</button>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress" id="progress"></div>
+                </div>
+                <div class="volume-control">
+                  <span>🔊</span>
+                  <input type="range" id="volume" min="0" max="100" value="50">
+                </div>
+              </div>
+            </div>
           </div>
           
           <div class="info-section">
             <h3>Let's Connect!</h3>
-            <p>I'm always interested in discussing new opportunities, research collaborations, or just having a chat about technology and philosophy.</p>
+            <p>I'm always interested in discussing new opportunities, research collaborations, or just having a chat!</p>
             
             <div class="experience-item">
               <h4>📧 Email</h4>

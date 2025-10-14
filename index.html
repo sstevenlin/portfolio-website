@@ -17,6 +17,9 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
 
+  <!-- Spotify Web Playback SDK -->
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+
   <!-- Main stylesheet -->
   <link rel="stylesheet" href="css/styles.css" />
 </head>
@@ -30,6 +33,10 @@
         <div class="player-info">
           <div class="player-name">Steven Lin</div>
           <div class="player-title">CS & Math Student @ Cornell</div>
+          <div class="current-song" id="current-song">
+            <i class="fas fa-music"></i>
+            <span id="song-title">Loading...</span>
+          </div>
         </div>
       </div>
       <div class="hud-center">
