@@ -665,7 +665,7 @@ class SpotifyPlayer {
         uri: "spotify:track:manual1",
         album: "Blonde",
         image: null,
-        audioUrl: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" // Demo audio
+        audioUrl: null // No audio file - visual only
       },
       {
         name: "Virginia Beach",
@@ -673,7 +673,7 @@ class SpotifyPlayer {
         uri: "spotify:track:manual2", 
         album: "For All The Dogs",
         image: null,
-        audioUrl: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" // Demo audio
+        audioUrl: null // No audio file - visual only
       },
       {
         name: "I Really Want To Stay At Your House",
@@ -681,7 +681,7 @@ class SpotifyPlayer {
         uri: "spotify:track:manual3",
         album: "SOS",
         image: null,
-        audioUrl: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" // Demo audio
+        audioUrl: null // No audio file - visual only
       },
       {
         name: "Dreams and Nightmares",
@@ -689,7 +689,7 @@ class SpotifyPlayer {
         uri: "spotify:track:manual4",
         album: "Midnights",
         image: null,
-        audioUrl: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" // Demo audio
+        audioUrl: null // No audio file - visual only
       },
       {
         name: "Believe - 2024 Remaster",
@@ -697,7 +697,7 @@ class SpotifyPlayer {
         uri: "spotify:track:manual5",
         album: "Harry's House",
         image: null,
-        audioUrl: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" // Demo audio
+        audioUrl: null // No audio file - visual only
       }
     ];
     
@@ -825,17 +825,81 @@ class SpotifyPlayer {
     }
   }
   
+  initializeAudio() {
+    // Create audio element for playback
+    this.audio = new Audio();
+    this.audio.preload = 'auto';
+    this.audio.volume = 0.5; // Default volume
+    
+    // Handle audio events
+    this.audio.addEventListener('ended', () => {
+      this.nextTrack();
+    });
+    
+    this.audio.addEventListener('error', (e) => {
+      console.log('Audio error:', e);
+      // Fallback to visual feedback if audio fails
+    });
+    
+    this.audio.addEventListener('canplay', () => {
+      console.log('Audio ready to play');
+    });
+  }
+
   togglePlayPause() {
+    if (!this.currentTrack || !this.currentTrack.audioUrl) {
+      console.log('No audio URL available');
+      return;
+    }
+    
     this.isPlaying = !this.isPlaying;
+    
+    if (this.isPlaying) {
+      this.playCurrentTrack();
+    } else {
+      this.pauseCurrentTrack();
+    }
+    
     this.updatePlayerDisplay();
     
-    // Simulate play/pause with visual feedback
+    // Visual feedback
     const playPauseBtn = document.getElementById('play-pause');
     if (playPauseBtn) {
       playPauseBtn.style.transform = 'scale(0.95)';
       setTimeout(() => {
         playPauseBtn.style.transform = 'scale(1)';
       }, 150);
+    }
+  }
+
+  playCurrentTrack() {
+    if (!this.currentTrack || !this.currentTrack.audioUrl) return;
+    
+    try {
+      this.audio.src = this.currentTrack.audioUrl;
+      this.audio.currentTime = 0;
+      
+      const playPromise = this.audio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          console.log(`Playing: ${this.currentTrack.name}`);
+        }).catch(error => {
+          console.log('Playback failed:', error);
+          this.isPlaying = false;
+          this.updatePlayerDisplay();
+        });
+      }
+    } catch (error) {
+      console.log('Audio playback error:', error);
+      this.isPlaying = false;
+      this.updatePlayerDisplay();
+    }
+  }
+
+  pauseCurrentTrack() {
+    if (this.audio) {
+      this.audio.pause();
+      console.log('Paused');
     }
   }
   
@@ -846,6 +910,12 @@ class SpotifyPlayer {
     const prevIndex = currentIndex > 0 ? currentIndex - 1 : this.topTracks.length - 1;
     
     this.currentTrack = this.topTracks[prevIndex];
+    
+    // If currently playing, start playing the new track
+    if (this.isPlaying) {
+      this.playCurrentTrack();
+    }
+    
     this.updateCurrentSongDisplay();
     this.updatePlayerDisplay();
     this.updateModalIfOpen();
@@ -860,6 +930,12 @@ class SpotifyPlayer {
     const nextIndex = currentIndex < this.topTracks.length - 1 ? currentIndex + 1 : 0;
     
     this.currentTrack = this.topTracks[nextIndex];
+    
+    // If currently playing, start playing the new track
+    if (this.isPlaying) {
+      this.playCurrentTrack();
+    }
+    
     this.updateCurrentSongDisplay();
     this.updatePlayerDisplay();
     this.updateModalIfOpen();
@@ -868,7 +944,10 @@ class SpotifyPlayer {
   }
   
   setVolume(volume) {
-    console.log('Volume set to:', volume);
+    if (this.audio) {
+      this.audio.volume = volume / 100; // Convert 0-100 to 0-1
+      console.log('Volume set to:', volume + '%');
+    }
   }
   
   cycleThroughTracks() {
