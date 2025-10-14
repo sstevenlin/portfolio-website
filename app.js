@@ -109,8 +109,8 @@ class PokemonPortfolioGame {
     // Check if character is standing on any furniture
     for (const [furnitureName, bounds] of Object.entries(furniturePositions)) {
       if (furnitureName === 'music') {
-        // Special case for music player - check a much larger area way to the left and higher
-        if (charPos.x >= 11 && charPos.x <= 16 && charPos.y >= 5 && charPos.y <= 11) {
+        // Special case for music player - check area shifted way down and to the right
+        if (charPos.x >= 16 && charPos.x <= 19 && charPos.y >= 10 && charPos.y <= 13) {
           nearbyFurniture.push({
             type: bounds.type,
             furniture: furnitureName,
@@ -119,7 +119,7 @@ class PokemonPortfolioGame {
         }
       } else if (furnitureName === 'desk') {
         // Special case for desk - expand interaction zone to the left and higher
-        if (charPos.x >= 18 && charPos.x <= bounds.x2 && charPos.y >= 2 && charPos.y <= bounds.y2) {
+        if (charPos.x >= 15 && charPos.x <= bounds.x2 && charPos.y >= 2 && charPos.y <= bounds.y2) {
           nearbyFurniture.push({
             type: bounds.type,
             furniture: furnitureName,
