@@ -482,7 +482,7 @@ class PokemonPortfolioGame {
           <div class="info-section">
             <h3>My Work Space</h3>
             <p>This is where the magic happens! Funnily enough, even though this is a desk, I rarely use my actual one in my dorm.</p>
-            <p>You can probably find my at the library or at a cafe. </p>
+            <p>You can probably find me at the library or at a cafe. </p>
           </div>
           
           <div class="info-section">
