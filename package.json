@@ -1,0 +1,22 @@
+{
+  "name": "portfolio-website",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Steven's Portfolio Website with Spotify Integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "echo 'No build step needed for static site'"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2",
+    "base-64": "^1.0.0",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {},
+  "keywords": ["portfolio", "spotify", "game", "pokemon"],
+  "author": "Steven Lin",
+  "license": "MIT"
+}

@@ -2222,6 +2222,7 @@ html, body {
   animation: music-pulse 2s ease-in-out infinite;
 }
 
+
 /* Current Song Display */
 .current-song {
   font-size: 11px;

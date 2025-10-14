@@ -639,7 +639,6 @@ class SpotifyPlayer {
   constructor() {
     this.deviceId = null;
     this.player = null;
-    this.accessToken = 'BQB5d9ccQQi48oWewygwUH5pn-da6qWLhMHrqeb815Sdod6BM6KqeFai1EpeeCvkSNYx-WYND0Cua0aPSwxsxzHRJft2Q1_4ERTVdUu_A42TR2Joa02yKVvKkhtzh32qZ6XlXeETTuKdBGBK2Z2h4y3MNMfhjSWLkADuaWjqL2mm2i3DLarjOw4RSK-4ffWCVoD_88HbsQdf5SzDMAsOJ-jZ7o5W7YYZgakXsygVevDxv5e6F-eN0p7XmBT_8RKExAJcoUbDVJ_vEtkvfrUz2774Y0FHrRiPEROiikCD46z1AxmMDLYv2mUpeA-9pVLgxCCw';
     this.isPlaying = false;
     this.currentTrack = null;
     this.topTracks = [];
@@ -648,101 +647,72 @@ class SpotifyPlayer {
   }
   
   async init() {
-    // Set up mock player immediately to show something
-    this.setupMockPlayer();
-    
-    try {
-      console.log('Initializing Spotify player...');
-      await this.fetchTopTracks();
-      console.log('Spotify data loaded successfully, switching to real data...');
-      this.setupPlayer();
-    } catch (error) {
-      console.error('Failed to fetch Spotify data:', error);
-      console.log('Keeping mock data...');
-    }
+    // Set up manual songs immediately
+    this.setupManualSongs();
+    console.log('✅ Manual songs loaded successfully');
+    this.setupPlayer();
   }
+
   
-  async fetchWebApi(endpoint, method, body) {
-    const res = await fetch(`https://api.spotify.com/${endpoint}`, {
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`,
+
+
+  // Method to set up manual songs with audio URLs
+  setupManualSongs() {
+    this.topTracks = [
+      {
+        name: "Nights",
+        artist: "Frank Ocean",
+        uri: "spotify:track:manual1",
+        album: "Blonde",
+        image: null,
+        audioUrl: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" // Demo audio
       },
-      method,
-      body: JSON.stringify(body)
-    });
-    return await res.json();
+      {
+        name: "Virginia Beach",
+        artist: "Drake",
+        uri: "spotify:track:manual2", 
+        album: "For All The Dogs",
+        image: null,
+        audioUrl: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" // Demo audio
+      },
+      {
+        name: "I Really Want To Stay At Your House",
+        artist: "Rosa Walton, Hallie Coggins",
+        uri: "spotify:track:manual3",
+        album: "SOS",
+        image: null,
+        audioUrl: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" // Demo audio
+      },
+      {
+        name: "Dreams and Nightmares",
+        artist: "Meek Mill",
+        uri: "spotify:track:manual4",
+        album: "Midnights",
+        image: null,
+        audioUrl: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" // Demo audio
+      },
+      {
+        name: "Believe - 2024 Remaster",
+        artist: "Cher", 
+        uri: "spotify:track:manual5",
+        album: "Harry's House",
+        image: null,
+        audioUrl: "https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" // Demo audio
+      }
+    ];
+    
+    // Set the first song as current
+    this.currentTrack = this.topTracks[0];
+    
+    // Initialize audio
+    this.initializeAudio();
   }
 
-  async fetchRecentlyPlayed() {
-    console.log('Fetching recently played tracks from Spotify...');
-    try {
-      // Try the recently played endpoint
-      const response = await this.fetchWebApi(
-        'v1/me/player/recently-played?limit=5', 'GET'
-      );
-      
-      console.log('Recently played API response:', response);
-      
-      // Check for error in response
-      if (response.error) {
-        console.error('Recently played API error:', response.error);
-        throw new Error(`Recently played API error: ${response.error.message}`);
-      }
-      
-      this.topTracks = response.items?.map(item => ({
-        name: item.track.name,
-        artist: item.track.artists.map(artist => artist.name).join(', '),
-        uri: item.track.uri,
-        album: item.track.album.name,
-        image: item.track.album.images[0]?.url,
-        playedAt: item.played_at
-      })) || [];
-      
-      console.log('Recently played tracks loaded:', this.topTracks);
-      
-      if (this.topTracks.length === 0) {
-        throw new Error('No recently played tracks found');
-      }
-    } catch (error) {
-      console.log('Recently played failed, falling back to top tracks:', error.message);
-      // Fallback to top tracks if recently played fails
-      await this.fetchTopTracks();
-    }
-  }
 
-  async fetchTopTracks() {
-    console.log('Fetching top tracks from Spotify (this week)...');
-    // Get your top tracks from Spotify API for this week
-    const response = await this.fetchWebApi(
-      'v1/me/top/tracks?time_range=short_term&limit=5', 'GET'
-    );
-    
-    console.log('Top tracks API response:', response);
-    
-    // Check for error in response
-    if (response.error) {
-      console.error('Spotify API error:', response.error);
-      throw new Error(`Spotify API error: ${response.error.message}`);
-    }
-    
-    this.topTracks = response.items?.map(track => ({
-      name: track.name,
-      artist: track.artists.map(artist => artist.name).join(', '),
-      uri: track.uri,
-      album: track.album.name,
-      image: track.album.images[0]?.url
-    })) || [];
-    
-    console.log('Top tracks loaded:', this.topTracks);
-    
-    if (this.topTracks.length === 0) {
-      throw new Error('No tracks found in Spotify response');
-    }
-  }
   
   setupPlayer() {
     if (this.topTracks.length > 0) {
-      // Use real Spotify data
+      // Use manual songs
       this.currentTrack = this.topTracks[0];
       this.updateCurrentSongDisplay();
       this.updatePlayerDisplay();
@@ -758,7 +728,7 @@ class SpotifyPlayer {
         this.cycleThroughTracks();
       }, 30000);
         } else {
-      this.setupMockPlayer();
+      console.log('❌ No tracks available for player setup');
     }
   }
   
@@ -773,27 +743,6 @@ class SpotifyPlayer {
     }
   }
   
-  setupMockPlayer() {
-    // Fallback mock data if Spotify API fails
-    const mockTracks = [
-      { name: "Blonde", artist: "Frank Ocean", isPlaying: true },
-      { name: "Good Kid, M.A.A.D City", artist: "Kendrick Lamar", isPlaying: false },
-      { name: "To Pimp a Butterfly", artist: "Kendrick Lamar", isPlaying: false },
-      { name: "Channel Orange", artist: "Frank Ocean", isPlaying: false },
-      { name: "IGOR", artist: "Tyler, The Creator", isPlaying: false }
-    ];
-    
-    this.topTracks = mockTracks;
-    this.currentTrack = mockTracks[0];
-    this.updateCurrentSongDisplay();
-    this.updatePlayerDisplay();
-    
-    this.setupEventListeners();
-    
-    setInterval(() => {
-      this.cycleThroughTracks();
-    }, 30000);
-  }
   
   setupEventListeners() {
     // Set up event listeners when the modal opens
@@ -891,13 +840,31 @@ class SpotifyPlayer {
   }
   
   previousTrack() {
-    // Mock previous track functionality
-    console.log('Previous track');
+    if (this.topTracks.length === 0) return;
+    
+    const currentIndex = this.topTracks.findIndex(track => track === this.currentTrack);
+    const prevIndex = currentIndex > 0 ? currentIndex - 1 : this.topTracks.length - 1;
+    
+    this.currentTrack = this.topTracks[prevIndex];
+    this.updateCurrentSongDisplay();
+    this.updatePlayerDisplay();
+    this.updateModalIfOpen();
+    
+    console.log('Previous track:', this.currentTrack.name);
   }
   
   nextTrack() {
-    // Mock next track functionality
-    console.log('Next track');
+    if (this.topTracks.length === 0) return;
+    
+    const currentIndex = this.topTracks.findIndex(track => track === this.currentTrack);
+    const nextIndex = currentIndex < this.topTracks.length - 1 ? currentIndex + 1 : 0;
+    
+    this.currentTrack = this.topTracks[nextIndex];
+    this.updateCurrentSongDisplay();
+    this.updatePlayerDisplay();
+    this.updateModalIfOpen();
+    
+    console.log('Next track:', this.currentTrack.name);
   }
   
   setVolume(volume) {
@@ -922,7 +889,13 @@ class SpotifyPlayer {
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
   new PokemonPortfolioGame();
-  new SpotifyPlayer();
+  const spotifyPlayer = new SpotifyPlayer();
+  
+  // Make spotifyPlayer globally accessible
+  window.spotifyPlayer = spotifyPlayer;
+  console.log('🎵 Music player ready with manual songs!');
+  
+  // Manual songs are now set up automatically - no token needed!
   
   // Calculate and display age
   const calculateAge = () => {

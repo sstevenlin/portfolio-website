@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Playlist to Code Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1DB954;
+            text-align: center;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid #1DB954;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        button {
+            background: #1DB954;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #1ed760;
+        }
+        .output {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin-top: 20px;
+        }
+        .copy-btn {
+            background: #4a90e2;
+            margin-top: 10px;
+        }
+        .copy-btn:hover {
+            background: #357abd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Spotify Playlist to Code Converter</h1>
+        
+        <div class="step">
+            <h3>📋 Step 1: Get Your Playlist Data</h3>
+            <p>Go to your Spotify playlist and copy the song list. You can either:</p>
+            <ul>
+                <li>Copy from Spotify web player (song names and artists)</li>
+                <li>Export from Spotify (if you have Spotify Premium)</li>
+                <li>Manually type your favorite songs</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>✏️ Step 2: Paste Your Songs</h3>
+            <p>Paste your songs in any format (one per line). Examples:</p>
+            <ul>
+                <li><code>Nights - Frank Ocean</code></li>
+                <li><code>Virginia Beach - Drake</code></li>
+                <li><code>Song Name by Artist Name</code></li>
+            </ul>
+            <textarea id="songInput" placeholder="Paste your songs here...
+Example:
+Nights - Frank Ocean
+Virginia Beach - Drake
+I Really Want To Stay At Your House - Rosa Walton, Hallie Coggins
+Dreams and Nightmares - Meek Mill
+Believe - 2024 Remaster - Cher"></textarea>
+        </div>
+
+        <div class="step">
+            <h3>🔄 Step 3: Convert to Code</h3>
+            <button onclick="convertSongs()">Convert to JavaScript Code</button>
+            <button onclick="clearAll()">Clear All</button>
+        </div>
+
+        <div class="step">
+            <h3>📄 Step 4: Copy the Generated Code</h3>
+            <div id="output" class="output" style="display: none;"></div>
+            <button id="copyBtn" class="copy-btn" onclick="copyToClipboard()" style="display: none;">Copy Code</button>
+        </div>
+
+        <div class="step">
+            <h3>📝 Step 5: Update Your Portfolio</h3>
+            <p>Replace the <code>setupManualSongs()</code> method in your <code>app.js</code> file with the generated code!</p>
+        </div>
+    </div>
+
+    <script>
+        function convertSongs() {
+            const input = document.getElementById('songInput').value.trim();
+            if (!input) {
+                alert('Please enter some songs first!');
+                return;
+            }
+
+            const lines = input.split('\n').filter(line => line.trim());
+            let code = '  setupManualSongs() {\n    this.topTracks = [\n';
+            
+            lines.forEach((line, index) => {
+                const cleanLine = line.trim();
+                if (cleanLine) {
+                    // Try to parse different formats
+                    let songName, artistName;
+                    
+                    if (cleanLine.includes(' - ')) {
+                        const parts = cleanLine.split(' - ');
+                        songName = parts[0].trim();
+                        artistName = parts[1].trim();
+                    } else if (cleanLine.includes(' by ')) {
+                        const parts = cleanLine.split(' by ');
+                        songName = parts[0].trim();
+                        artistName = parts[1].trim();
+                    } else {
+                        // If no separator, assume it's just the song name
+                        songName = cleanLine;
+                        artistName = 'Unknown Artist';
+                    }
+                    
+                    code += `      {\n        name: "${songName}",\n        artist: "${artistName}",\n        uri: "spotify:track:manual${index + 1}",\n        album: "${songName}",\n        image: null\n      }`;
+                    
+                    if (index < lines.length - 1) {
+                        code += ',';
+                    }
+                    code += '\n';
+                }
+            });
+            
+            code += `    ];\n    \n    // Set the first song as current\n    this.currentTrack = this.topTracks[0];\n  }`;
+            
+            const output = document.getElementById('output');
+            const copyBtn = document.getElementById('copyBtn');
+            
+            output.textContent = code;
+            output.style.display = 'block';
+            copyBtn.style.display = 'inline-block';
+        }
+
+        function clearAll() {
+            document.getElementById('songInput').value = '';
+            document.getElementById('output').style.display = 'none';
+            document.getElementById('copyBtn').style.display = 'none';
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            const text = output.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('copyBtn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#4a90e2';
+                }, 2000);
+            }).catch(err => {
+                alert('Failed to copy. Please select and copy the text manually.');
+            });
+        }
+    </script>
+</body>
+</html>
