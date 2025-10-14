@@ -144,7 +144,7 @@ class PokemonPortfolioGame {
             distance: 0
           });
         }
-      } else {
+    } else {
         // Normal furniture - check if standing on the furniture
         if (charPos.x >= bounds.x1 && charPos.x <= bounds.x2 &&
             charPos.y >= bounds.y1 && charPos.y <= bounds.y2) {
@@ -552,8 +552,8 @@ class PokemonPortfolioGame {
             <div class="spotify-player" id="spotify-player">
               <div class="now-playing" id="now-playing">
                 <div class="track-info">
-                  <div class="track-name" id="track-name">Loading...</div>
-                  <div class="artist-name" id="artist-name">Loading...</div>
+                  <div class="track-name" id="track-name">Blonde</div>
+                  <div class="artist-name" id="artist-name">Frank Ocean</div>
                 </div>
                 <div class="player-controls">
                   <button id="prev-track" class="control-btn">⏮</button>
@@ -603,13 +603,256 @@ class PokemonPortfolioGame {
   }
 }
 
+// Spotify Integration
+class SpotifyPlayer {
+  constructor() {
+    this.deviceId = null;
+    this.player = null;
+    this.accessToken = 'BQB5d9ccQQi48oWewygwUH5pn-da6qWLhMHrqeb815Sdod6BM6KqeFai1EpeeCvkSNYx-WYND0Cua0aPSwxsxzHRJft2Q1_4ERTVdUu_A42TR2Joa02yKVvKkhtzh32qZ6XlXeETTuKdBGBK2Z2h4y3MNMfhjSWLkADuaWjqL2mm2i3DLarjOw4RSK-4ffWCVoD_88HbsQdf5SzDMAsOJ-jZ7o5W7YYZgakXsygVevDxv5e6F-eN0p7XmBT_8RKExAJcoUbDVJ_vEtkvfrUz2774Y0FHrRiPEROiikCD46z1AxmMDLYv2mUpeA-9pVLgxCCw';
+    this.isPlaying = false;
+    this.currentTrack = null;
+    this.topTracks = [];
+    
+    this.init();
+  }
+  
+  async init() {
+    // Set up mock player immediately to show something
+    this.setupMockPlayer();
+    
+    try {
+      console.log('Initializing Spotify player...');
+      await this.fetchTopTracks();
+      console.log('Spotify data loaded successfully, switching to real data...');
+      this.setupPlayer();
+    } catch (error) {
+      console.error('Failed to fetch Spotify data:', error);
+      console.log('Keeping mock data...');
+    }
+  }
+  
+  async fetchWebApi(endpoint, method, body) {
+    const res = await fetch(`https://api.spotify.com/${endpoint}`, {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+      method,
+      body: JSON.stringify(body)
+    });
+    return await res.json();
+  }
+
+  async fetchTopTracks() {
+    console.log('Fetching top tracks from Spotify (this week)...');
+    // Get your top tracks from Spotify API for this week
+    const response = await this.fetchWebApi(
+      'v1/me/top/tracks?time_range=short_term&limit=5', 'GET'
+    );
+    
+    console.log('Spotify API response:', response);
+    
+    this.topTracks = response.items?.map(track => ({
+      name: track.name,
+      artist: track.artists.map(artist => artist.name).join(', '),
+      uri: track.uri,
+      album: track.album.name,
+      image: track.album.images[0]?.url
+    })) || [];
+    
+    console.log('Top tracks loaded:', this.topTracks);
+    
+    if (this.topTracks.length === 0) {
+      throw new Error('No tracks found in Spotify response');
+    }
+  }
+  
+  setupPlayer() {
+    if (this.topTracks.length > 0) {
+      // Use real Spotify data
+      this.currentTrack = this.topTracks[0];
+      this.updateCurrentSongDisplay();
+      this.updatePlayerDisplay();
+      
+      // Set up event listeners
+      this.setupEventListeners();
+      
+      // Update modal if it's currently open
+      this.updateModalIfOpen();
+      
+      // Cycle through your actual top tracks every 30 seconds
+      setInterval(() => {
+        this.cycleThroughTracks();
+      }, 30000);
+        } else {
+      this.setupMockPlayer();
+    }
+  }
+  
+  updateModalIfOpen() {
+    // Check if the music player modal is currently open
+    const modal = document.getElementById('modal-overlay');
+    if (modal && modal.style.display !== 'none') {
+      // Modal is open, update the player display
+      setTimeout(() => {
+        this.updatePlayerDisplay();
+      }, 100);
+    }
+  }
+  
+  setupMockPlayer() {
+    // Fallback mock data if Spotify API fails
+    const mockTracks = [
+      { name: "Blonde", artist: "Frank Ocean", isPlaying: true },
+      { name: "Good Kid, M.A.A.D City", artist: "Kendrick Lamar", isPlaying: false },
+      { name: "To Pimp a Butterfly", artist: "Kendrick Lamar", isPlaying: false },
+      { name: "Channel Orange", artist: "Frank Ocean", isPlaying: false },
+      { name: "IGOR", artist: "Tyler, The Creator", isPlaying: false }
+    ];
+    
+    this.topTracks = mockTracks;
+    this.currentTrack = mockTracks[0];
+    this.updateCurrentSongDisplay();
+    this.updatePlayerDisplay();
+    
+    this.setupEventListeners();
+    
+    setInterval(() => {
+      this.cycleThroughTracks();
+    }, 30000);
+  }
+  
+  setupEventListeners() {
+    // Set up event listeners when the modal opens
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('[data-zone="contact"]')) {
+        // Music player modal is opening, set up controls
+        setTimeout(() => {
+          this.setupModalControls();
+        }, 100);
+      }
+    });
+  }
+  
+  setupModalControls() {
+    // Update the modal display with current track first
+    this.updatePlayerDisplay();
+    
+    // Play/Pause button
+    const playPauseBtn = document.getElementById('play-pause');
+    if (playPauseBtn) {
+      // Remove existing listeners to avoid duplicates
+      playPauseBtn.replaceWith(playPauseBtn.cloneNode(true));
+      const newPlayPauseBtn = document.getElementById('play-pause');
+      newPlayPauseBtn.addEventListener('click', () => {
+        this.togglePlayPause();
+      });
+    }
+    
+    // Previous track
+    const prevBtn = document.getElementById('prev-track');
+    if (prevBtn) {
+      prevBtn.replaceWith(prevBtn.cloneNode(true));
+      const newPrevBtn = document.getElementById('prev-track');
+      newPrevBtn.addEventListener('click', () => {
+        this.previousTrack();
+      });
+    }
+    
+    // Next track
+    const nextBtn = document.getElementById('next-track');
+    if (nextBtn) {
+      nextBtn.replaceWith(nextBtn.cloneNode(true));
+      const newNextBtn = document.getElementById('next-track');
+      newNextBtn.addEventListener('click', () => {
+        this.nextTrack();
+      });
+    }
+    
+    // Volume control
+    const volumeSlider = document.getElementById('volume');
+    if (volumeSlider) {
+      volumeSlider.addEventListener('input', (e) => {
+        this.setVolume(e.target.value);
+      });
+    }
+  }
+  
+  updateCurrentSongDisplay() {
+    const songTitle = document.getElementById('song-title');
+    if (songTitle && this.currentTrack) {
+      songTitle.textContent = `${this.currentTrack.name} - ${this.currentTrack.artist}`;
+    }
+  }
+  
+  updatePlayerDisplay() {
+    const trackName = document.getElementById('track-name');
+    const artistName = document.getElementById('artist-name');
+    const playPauseBtn = document.getElementById('play-pause');
+    
+    if (trackName && this.currentTrack) {
+      trackName.textContent = this.currentTrack.name;
+    }
+    
+    if (artistName && this.currentTrack) {
+      artistName.textContent = this.currentTrack.artist;
+    }
+    
+    if (playPauseBtn) {
+      playPauseBtn.textContent = this.isPlaying ? '⏸' : '▶';
+    }
+  }
+  
+  togglePlayPause() {
+    this.isPlaying = !this.isPlaying;
+    this.updatePlayerDisplay();
+    
+    // Simulate play/pause with visual feedback
+    const playPauseBtn = document.getElementById('play-pause');
+    if (playPauseBtn) {
+      playPauseBtn.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        playPauseBtn.style.transform = 'scale(1)';
+      }, 150);
+    }
+  }
+  
+  previousTrack() {
+    // Mock previous track functionality
+    console.log('Previous track');
+  }
+  
+  nextTrack() {
+    // Mock next track functionality
+    console.log('Next track');
+  }
+  
+  setVolume(volume) {
+    console.log('Volume set to:', volume);
+  }
+  
+  cycleThroughTracks() {
+    // Cycle through your actual top tracks
+    if (this.topTracks.length > 0) {
+      const currentIndex = this.topTracks.findIndex(track => track === this.currentTrack);
+      const nextIndex = (currentIndex + 1) % this.topTracks.length;
+      this.currentTrack = this.topTracks[nextIndex];
+      this.updateCurrentSongDisplay();
+      this.updatePlayerDisplay();
+      
+      // Update modal if it's currently open
+      this.updateModalIfOpen();
+    }
+  }
+}
+
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
   new PokemonPortfolioGame();
+  new SpotifyPlayer();
   
   // Calculate and display age
   const calculateAge = () => {
-    const birthYear = 2003; // Adjust this to your actual birth year
+    const birthYear = 2006; // Adjust this to your actual birth year
     const currentYear = new Date().getFullYear();
     const age = currentYear - birthYear;
     const ageElement = document.getElementById('age-display');
