@@ -250,17 +250,17 @@ class PokemonPortfolioGame {
     
     // For movement, go to a good position next to the furniture
     if (zoneType === 'experience') {
-      // Desk - go more to the left and higher
-      return { x: bounds.x1 - 2, y: bounds.y1 - 1 };
+      // Desk - moved 4 right and 2 down from previous position (13,2) -> (17,4)
+      return { x: bounds.x1 + 2, y: bounds.y1 + 1 };
     } else if (zoneType === 'contact') {
-      // Music player - go much higher and more to the left
-      return { x: bounds.x1 - 2, y: bounds.y1 - 1 };
+      // Music player - moved 3 right and 2 down from previous position (14,9) -> (17,11)
+      return { x: bounds.x1 + 1, y: bounds.y1 + 1 };
     } else if (zoneType === 'about') {
-      // Bed - adjust position to be less left and lower
-      return { x: bounds.x1, y: bounds.y1 };
+      // Bed - moved 2 right and 2 down from previous position (2,3) -> (4,5)
+      return { x: bounds.x1 + 2, y: bounds.y1 + 2 };
     } else if (zoneType === 'skills') {
-      // Closet - cut off 2 from right and go 3 spaces higher
-      return { x: 2, y: 7 };
+      // Closet - moved 2 right and 4 down from previous position (2,7) -> (4,11)
+      return { x: 4, y: 11 };
     } else {
       // Left side furniture - go to right side of the furniture  
       return { x: bounds.x2, y: Math.floor((bounds.y1 + bounds.y2) / 2) };

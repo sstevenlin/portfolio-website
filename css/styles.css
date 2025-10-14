@@ -2162,3 +2162,26 @@ html, body {
 .modal-content::-webkit-scrollbar-thumb:hover {
   background: #6A6A6A;
 }
+
+/* Copyright Text in Room */
+.copyright-text {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid #4A4A4A;
+  border-radius: 8px;
+  padding: 8px 12px;
+  text-align: center;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+}
+
+.copyright-text p {
+  color: #FFFFFF;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.5px;
+}
