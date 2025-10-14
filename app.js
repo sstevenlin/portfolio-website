@@ -128,7 +128,7 @@ class PokemonPortfolioGame {
         }
       } else if (furnitureName === 'bed') {
         // Special case for bed - limit interaction zone to left side only and move higher
-        if (charPos.x >= bounds.x1 && charPos.x <= bounds.x1 + 1 && charPos.y >= bounds.y1 - 1 && charPos.y <= bounds.y2) {
+        if (charPos.x >= bounds.x1 + 3 && charPos.x <= bounds.x1 + 4 && charPos.y >= bounds.y1 - 1 && charPos.y <= bounds.y2) {
           nearbyFurniture.push({
             type: bounds.type,
             furniture: furnitureName,
@@ -136,8 +136,8 @@ class PokemonPortfolioGame {
           });
         }
       } else if (furnitureName === 'closet') {
-        // Special case for closet - shift interaction zone to the left and higher
-        if (charPos.x >= 1 && charPos.x <= 3 && charPos.y >= 7 && charPos.y <= 10) {
+        // Special case for closet - 4 spaces below lowest bed border (bed y=3-6, so 4 below = y=10-13)
+        if (charPos.x >= 3 && charPos.x <= 5 && charPos.y >= 10 && charPos.y <= 13) {
           nearbyFurniture.push({
             type: bounds.type,
             furniture: furnitureName,
