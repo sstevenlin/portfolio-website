@@ -1,4 +1,4 @@
-// Pokémon-Style Portfolio Game JavaScript
+// Pokémon-Style Portfolio Game JavaScript - Updated 2025-01-14 v4
 
 class PokemonPortfolioGame {
   constructor() {
