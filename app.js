@@ -697,12 +697,11 @@ class SpotifyPlayer {
 
   getApiBase() {
     const { hostname, port, protocol } = window.location;
-    if (port === '3001' || (hostname === 'localhost' && !port)) {
-      return '';
-    }
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      if (port === '3001') return '';
       return `${protocol}//${hostname}:3001`;
     }
+    // Vercel / production: API routes live on same origin
     return '';
   }
   
