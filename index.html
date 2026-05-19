@@ -17,17 +17,11 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
   />
 
-  <!-- Spotify Web Playback SDK -->
-  <script src="https://sdk.scdn.co/spotify-player.js"></script>
-  <script>
-    // Define the required function for Spotify Web Playback SDK
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      console.log('Spotify Web Playback SDK is ready');
-    };
-  </script>
+  <!-- Spotify embed (play button in portfolio player) -->
+  <script src="https://open.spotify.com/embed/iframe-api/v1" async></script>
 
   <!-- Main stylesheet -->
-  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/styles.css?v=wood" />
 </head>
 
 <body>
@@ -45,10 +39,15 @@
               <div class="songs-of-week">
                 <div class="songs-title">
                   <i class="fas fa-music"></i>
-                  Recently Listened Songs
+                  Song of the Month
                 </div>
                 <div class="current-song" id="current-song">
-                  <span id="song-title">Loading...</span>
+                  <div class="song-marquee">
+                    <div class="song-marquee__track" id="song-marquee-track">
+                      <span id="song-title" class="song-marquee__text">One of These Nights - 2013 Remaster by Eagles</span>
+                      <span class="song-marquee__text song-marquee__text--copy" aria-hidden="true">One of These Nights - 2013 Remaster by Eagles</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -159,36 +158,20 @@
             <div class="speaker-hole"></div>
           </div>
           <div class="led-display">
-            <div class="led-text">CD</div>
+            <div class="led-text" id="cd-led-text">THESE NIGHTS</div>
           </div>
         </div>
         
-        <!-- Character -->
-        <div class="character" id="character" style="grid-column: 10; grid-row: 7;">
-          <div class="character-sprite">
-            <div class="head">
-              <div class="ear-left">
-                <div class="inner-ear-left"></div>
-              </div>
-              <div class="ear-right">
-                <div class="inner-ear-right"></div>
-              </div>
-              <div class="eye-left"></div>
-              <div class="eye-right"></div>
-              <div class="nose"></div>
-              <div class="mouth"></div>
-              <div class="whisker-left-1"></div>
-              <div class="whisker-left-2"></div>
-              <div class="whisker-right-1"></div>
-              <div class="whisker-right-2"></div>
-            </div>
-            <div class="body">
-              <div class="belly"></div>
-            </div>
-            <div class="tail"></div>
-            <div class="paw-left"></div>
-            <div class="paw-right"></div>
-          </div>
+        <!-- Character — swap assets/avatar.jpg for your own photo -->
+        <div class="character" id="character">
+          <img
+            class="character-avatar"
+            src="assets/avatar.jpg"
+            alt="Steven Lin"
+            width="72"
+            height="72"
+            decoding="async"
+          />
         </div>
 
         <!-- Interactive Zones (on furniture) -->
@@ -260,6 +243,6 @@
   </div>
 
   <!-- Game Script -->
-  <script src="./app.js?v=4&t=20250114"></script>
+  <script src="./app.js?v=5"></script>
 </body>
 </html>

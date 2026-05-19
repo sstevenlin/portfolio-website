@@ -3,10 +3,14 @@ import express from "express";
 import fetch from "node-fetch";
 import b64 from "base-64";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static(__dirname));
 
 // Your Spotify credentials (set these as environment variables)
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID || 'e624f9886d144dd8a530550a812d49d3';
@@ -197,6 +201,52 @@ app.get("/callback", async (req, res) => {
   }
 });
 
+// Song of the month — Spotify 30s preview for in-browser playback
+app.get("/api/song-of-the-month", async (req, res) => {
+  try {
+    const token = await getAppToken();
+    const query = 'track:"One of These Nights" artist:Eagles';
+    const searchUrl = new URL("https://api.spotify.com/v1/search");
+    searchUrl.searchParams.set("q", query);
+    searchUrl.searchParams.set("type", "track");
+    searchUrl.searchParams.set("limit", "15");
+
+    const response = await fetch(searchUrl, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json(data);
+    }
+
+    const tracks = data.tracks?.items || [];
+    const track =
+      tracks.find((t) => /remaster/i.test(t.name) && /2013/i.test(t.name)) ||
+      tracks.find((t) => /remaster/i.test(t.name)) ||
+      tracks.find((t) => t.name.toLowerCase().includes("one of these nights")) ||
+      tracks[0];
+
+    if (!track) {
+      return res.status(404).json({ error: "track_not_found" });
+    }
+
+    const artist = track.artists.map((a) => a.name).join(", ");
+    res.json({
+      name: track.name,
+      artist,
+      displayTitle: `${track.name} by ${artist}`,
+      preview_url: track.preview_url,
+      spotify_url: track.external_urls?.spotify,
+      spotify_uri: track.uri,
+      image: track.album?.images?.[0]?.url,
+    });
+  } catch (error) {
+    console.error("Song preview error:", error);
+    res.status(500).json({ error: "server_error", message: error.message });
+  }
+});
+
 // Health check endpoint
 app.get("/api/health", (req, res) => {
   res.json({ 
@@ -210,7 +260,9 @@ app.listen(PORT, () => {
   console.log(`🚀 Spotify proxy server running on port ${PORT}`);
   console.log(`📡 Endpoints:`);
   console.log(`   GET /api/top-tracks?time_range=short_term&limit=5`);
+  console.log(`   GET /api/song-of-the-month`);
   console.log(`   GET /api/health`);
+  console.log(`   Static site: http://localhost:${PORT}`);
 });
 
 export default app;

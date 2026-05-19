@@ -12,20 +12,38 @@ class PokemonPortfolioGame {
     this.gridCols = 20;
     this.gridRows = 15;
     this.characterGridPos = { x: 10, y: 7 }; // Starting position - center of board
-    this.isMoving = false;
-        this.keys = {};
-        this.moveCooldown = false;
-        this.audioContext = null;
+    this.keys = {};
+    this.isAnimating = false;
+    this.moveDuration = 100;
+    this.facing = 'down';
+    this.audioContext = null;
+    this.room = null;
         
-        this.init();
+    this.init();
   }
   
   init() {
+    this.room = document.querySelector('.pokemon-room');
+    this.setupAvatar();
     this.setupEventListeners();
-    this.updateCharacterPosition();
+    this.updateCharacterPosition(false);
+    this.startMovementLoop();
     this.setupInteractiveZones();
     this.setupModal();
     this.playStartupSound();
+    window.addEventListener('resize', () => this.updateCharacterPosition(false));
+  }
+
+  setupAvatar() {
+    const img = this.character.querySelector('.character-avatar');
+    if (!img) return;
+    const githubFallback = 'https://github.com/sstevenlin.png';
+    img.addEventListener('error', () => {
+      if (!img.dataset.fallback) {
+        img.dataset.fallback = '1';
+        img.src = githubFallback;
+      }
+    });
   }
   
   setupEventListeners() {
@@ -40,34 +58,24 @@ class PokemonPortfolioGame {
     document.addEventListener('keydown', initAudioOnInteraction);
     document.addEventListener('click', initAudioOnInteraction);
     
-    // Keyboard controls
+    // Keyboard controls — movement handled in game loop while keys are held
     document.addEventListener('keydown', (e) => {
-      if (this.moveCooldown) return;
-      
       const key = e.key.toLowerCase();
       this.keys[key] = true;
       
-      // Handle spacebar interaction
       if (key === ' ') {
         e.preventDefault();
         this.attemptInteraction();
-        return;
-      }
-      
-      // Handle movement with grid-based system
-      if (['arrowup', 'w'].includes(key)) {
-        this.moveCharacter(0, -1);
-      } else if (['arrowdown', 's'].includes(key)) {
-        this.moveCharacter(0, 1);
-      } else if (['arrowleft', 'a'].includes(key)) {
-        this.moveCharacter(-1, 0);
-      } else if (['arrowright', 'd'].includes(key)) {
-        this.moveCharacter(1, 0);
       }
     });
     
     document.addEventListener('keyup', (e) => {
-      this.keys[e.key.toLowerCase()] = false;
+      const key = e.key.toLowerCase();
+      this.keys[key] = false;
+      const moveKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'];
+      if (moveKeys.includes(key) && !moveKeys.some((k) => this.keys[k])) {
+        this.character.classList.remove('walking');
+      }
     });
     
     // Prevent default behavior for arrow keys and WASD
@@ -79,29 +87,82 @@ class PokemonPortfolioGame {
     });
   }
   
+  startMovementLoop() {
+    const tick = () => {
+      if (!this.isAnimating) {
+        let deltaX = 0;
+        let deltaY = 0;
+        if (this.keys.w || this.keys.arrowup) deltaY = -1;
+        else if (this.keys.s || this.keys.arrowdown) deltaY = 1;
+        else if (this.keys.a || this.keys.arrowleft) deltaX = -1;
+        else if (this.keys.d || this.keys.arrowright) deltaX = 1;
+        if (deltaX || deltaY) {
+          this.moveCharacter(deltaX, deltaY);
+        }
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+
   moveCharacter(deltaX, deltaY) {
-    if (this.moveCooldown) return;
+    if (this.isAnimating) return;
     
     const newX = this.characterGridPos.x + deltaX;
     const newY = this.characterGridPos.y + deltaY;
     
-    // Check boundaries
-    if (newX >= 1 && newX <= this.gridCols && newY >= 1 && newY <= this.gridRows) {
-      this.characterGridPos.x = newX;
-      this.characterGridPos.y = newY;
-      
-      this.updateCharacterPosition();
-      this.playMoveSound();
-      this.setMoveCooldown();
+    if (newX < 1 || newX > this.gridCols || newY < 1 || newY > this.gridRows) {
+      return;
     }
+
+    if (deltaX < 0) {
+      this.facing = 'left';
+      this.character.classList.add('facing-left');
+    } else if (deltaX > 0) {
+      this.facing = 'right';
+      this.character.classList.remove('facing-left');
+    }
+
+    this.characterGridPos.x = newX;
+    this.characterGridPos.y = newY;
+    this.isAnimating = true;
+    this.character.classList.add('walking');
+    this.updateCharacterPosition(true);
+    this.playMoveSound();
+
+    setTimeout(() => {
+      this.isAnimating = false;
+      if (!this.keys.w && !this.keys.a && !this.keys.s && !this.keys.d &&
+          !this.keys.arrowup && !this.keys.arrowdown && !this.keys.arrowleft && !this.keys.arrowright) {
+        this.character.classList.remove('walking');
+      }
+    }, this.moveDuration);
   }
   
-  updateCharacterPosition() {
-    // Update grid position display
-    this.character.style.gridColumn = this.characterGridPos.x;
-    this.character.style.gridRow = this.characterGridPos.y;
-    
-    // Update proximity indicators
+  updateCharacterPosition(animate = true) {
+    if (!this.room) {
+      this.room = document.querySelector('.pokemon-room');
+    }
+    if (!this.room) return;
+
+    const cellW = this.room.clientWidth / this.gridCols;
+    const cellH = this.room.clientHeight / this.gridRows;
+    const left = (this.characterGridPos.x - 0.5) * cellW;
+    const top = (this.characterGridPos.y - 0.5) * cellH;
+
+    this.character.style.transition = animate
+      ? `left ${this.moveDuration}ms ease-out, top ${this.moveDuration}ms ease-out`
+      : 'none';
+
+    this.character.style.left = `${left}px`;
+    this.character.style.top = `${top}px`;
+
+    // Force reflow so instant reposition (resize) applies before next animated move
+    if (!animate) {
+      void this.character.offsetWidth;
+      this.character.style.transition = `left ${this.moveDuration}ms ease-out, top ${this.moveDuration}ms ease-out`;
+    }
+
     this.updateProximityIndicators();
   }
   
@@ -132,24 +193,6 @@ class PokemonPortfolioGame {
       } else if (furnitureName === 'desk') {
         // Special case for desk - expand interaction zone to the left and higher
         if (charPos.x >= 15 && charPos.x <= bounds.x2 && charPos.y >= 2 && charPos.y <= bounds.y2) {
-          nearbyFurniture.push({
-            type: bounds.type,
-            furniture: furnitureName,
-            distance: 0
-          });
-        }
-      } else if (furnitureName === 'bed') {
-        // Special case for bed - limit interaction zone to left side only and move higher
-        if (charPos.x >= bounds.x1 + 3 && charPos.x <= bounds.x1 + 4 && charPos.y >= bounds.y1 - 1 && charPos.y <= bounds.y2) {
-          nearbyFurniture.push({
-            type: bounds.type,
-            furniture: furnitureName,
-            distance: 0
-          });
-        }
-      } else if (furnitureName === 'closet') {
-        // Special case for closet - 4 spaces below lowest bed border (bed y=3-6, so 4 below = y=10-13)
-        if (charPos.x >= 3 && charPos.x <= 5 && charPos.y >= 10 && charPos.y <= 13) {
           nearbyFurniture.push({
             type: bounds.type,
             furniture: furnitureName,
@@ -268,11 +311,11 @@ class PokemonPortfolioGame {
       // Music player - moved 3 right and 2 down from previous position (14,9) -> (17,11)
       return { x: bounds.x1 + 1, y: bounds.y1 + 1 };
     } else if (zoneType === 'about') {
-      // Bed - moved 2 right and 2 down from previous position (2,3) -> (4,5)
-      return { x: bounds.x1 + 2, y: bounds.y1 + 2 };
+      // Bed — stand on the mattress (matches grid-column 2/6, grid-row 3/7)
+      return { x: bounds.x1 + 1, y: bounds.y1 + 2 };
     } else if (zoneType === 'skills') {
-      // Closet - moved 2 right and 4 down from previous position (2,7) -> (4,11)
-      return { x: 4, y: 11 };
+      // Closet — stand in front (matches grid-column 2/5, grid-row 10/14)
+      return { x: bounds.x1 + 1, y: bounds.y1 + 2 };
     } else {
       // Left side furniture - go to right side of the furniture  
       return { x: bounds.x2, y: Math.floor((bounds.y1 + bounds.y2) / 2) };
@@ -311,42 +354,37 @@ class PokemonPortfolioGame {
   }
   
   moveAlongPath(path, onComplete) {
-    if (path.length === 0) {
-      onComplete();
-      return;
-    }
-    
-    let currentIndex = 0;
-    
-    const moveNext = () => {
-      if (currentIndex >= path.length) {
+    const steps = [...path];
+    const step = () => {
+      if (steps.length === 0) {
         onComplete();
         return;
       }
-      
-      const nextPos = path[currentIndex];
+      if (this.isAnimating) {
+        setTimeout(step, 16);
+        return;
+      }
+      const nextPos = steps.shift();
       const deltaX = nextPos.x - this.characterGridPos.x;
       const deltaY = nextPos.y - this.characterGridPos.y;
-      
+      if (deltaX < 0) {
+        this.character.classList.add('facing-left');
+      } else if (deltaX > 0) {
+        this.character.classList.remove('facing-left');
+      }
       this.characterGridPos.x = nextPos.x;
       this.characterGridPos.y = nextPos.y;
-      this.updateCharacterPosition();
+      this.isAnimating = true;
+      this.character.classList.add('walking');
+      this.updateCharacterPosition(true);
       this.playMoveSound();
-      
-      currentIndex++;
-      
-      // Move to next position after a short delay
-      setTimeout(moveNext, 200);
+      setTimeout(() => {
+        this.isAnimating = false;
+        this.character.classList.remove('walking');
+        step();
+      }, this.moveDuration);
     };
-    
-    moveNext();
-  }
-  
-  setMoveCooldown() {
-    this.moveCooldown = true;
-    setTimeout(() => {
-      this.moveCooldown = false;
-    }, 150); // Pokémon-style movement timing
+    step();
   }
   
   setupInteractiveZones() {
@@ -391,6 +429,11 @@ class PokemonPortfolioGame {
   
   closeModal() {
     this.modalOverlay.classList.remove('active');
+    if (window.spotifyPlayer?.isPlaying) {
+      window.spotifyPlayer.pauseCurrentTrack();
+      window.spotifyPlayer.isPlaying = false;
+      window.spotifyPlayer.updatePlayerDisplay();
+    }
   }
   
   // Sound effects (using Web Audio API for retro sounds)
@@ -583,8 +626,8 @@ class PokemonPortfolioGame {
             <div class="spotify-player" id="spotify-player">
               <div class="now-playing" id="now-playing">
                 <div class="track-info">
-                  <div class="track-name" id="track-name">Blonde</div>
-                  <div class="artist-name" id="artist-name">Frank Ocean</div>
+                  <div class="track-name" id="track-name">One of These Nights</div>
+                  <div class="artist-name" id="artist-name">Eagles · 2013 Remaster</div>
                 </div>
                 <div class="player-controls">
                   <button id="prev-track" class="control-btn">⏮</button>
@@ -599,6 +642,7 @@ class PokemonPortfolioGame {
                   <input type="range" id="volume" min="0" max="100" value="50">
                 </div>
               </div>
+              <div id="spotify-embed-host" class="spotify-embed-host" hidden></div>
             </div>
           </div>
           
@@ -642,74 +686,117 @@ class SpotifyPlayer {
     this.isPlaying = false;
     this.currentTrack = null;
     this.topTracks = [];
+    this.previewLoadPromise = null;
+    this.audioReady = false;
+    this.useSpotifyEmbed = false;
+    this.embedController = null;
+    this.embedReadyPromise = null;
     
     this.init();
   }
+
+  getApiBase() {
+    const { hostname, port, protocol } = window.location;
+    if (port === '3001' || (hostname === 'localhost' && !port)) {
+      return '';
+    }
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return `${protocol}//${hostname}:3001`;
+    }
+    return '';
+  }
   
   async init() {
-    // Set up manual songs immediately
     this.setupManualSongs();
-    console.log('✅ Manual songs loaded successfully');
     this.setupPlayer();
+    this.previewLoadPromise = this.loadSongPreview();
+    await this.previewLoadPromise;
+    console.log(this.audioReady ? '✅ Song preview ready' : '⚠️ No preview — run npm start or add assets/song.mp3');
   }
 
   
 
 
-  // Method to set up manual songs with audio URLs
+  // Song of the month (shown in HUD + room CD player)
   setupManualSongs() {
-    this.topTracks = [
-      {
-        name: "Nights",
-        artist: "Frank Ocean",
-        uri: "spotify:track:manual1",
-        album: "Blonde",
-        image: null,
-        audioUrl: null // No audio file - visual only
-      },
-      {
-        name: "Virginia Beach",
-        artist: "Drake",
-        uri: "spotify:track:manual2", 
-        album: "For All The Dogs",
-        image: null,
-        audioUrl: null // No audio file - visual only
-      },
-      {
-        name: "I Really Want To Stay At Your House",
-        artist: "Rosa Walton, Hallie Coggins",
-        uri: "spotify:track:manual3",
-        album: "SOS",
-        image: null,
-        audioUrl: null // No audio file - visual only
-      },
-      {
-        name: "Dreams and Nightmares",
-        artist: "Meek Mill",
-        uri: "spotify:track:manual4",
-        album: "Midnights",
-        image: null,
-        audioUrl: null // No audio file - visual only
-      },
-      {
-        name: "Believe - 2024 Remaster",
-        artist: "Cher", 
-        uri: "spotify:track:manual5",
-        album: "Harry's House",
-        image: null,
-        audioUrl: null // No audio file - visual only
-      }
-    ];
-    
-    // Set the first song as current
-    this.currentTrack = this.topTracks[0];
-    
-    // Initialize audio
+    const songOfTheMonth = {
+      name: 'One of These Nights',
+      artist: 'Eagles',
+      displayTitle: 'One of These Nights - 2013 Remaster by Eagles',
+      ledLabel: 'THESE NIGHTS',
+      uri: 'spotify:track:608xszaAxVh4m7NcKJiAbF',
+      spotifyUri: 'spotify:track:608xszaAxVh4m7NcKJiAbF',
+      album: 'One of These Nights',
+      image: null,
+      audioUrl: null,
+    };
+
+    this.topTracks = [songOfTheMonth];
+    this.currentTrack = songOfTheMonth;
     this.initializeAudio();
   }
 
+  async loadSongPreview() {
+    const localFallback = 'assets/song-of-the-month.mp3';
 
-  
+    const applyPreview = (url) => {
+      if (!url || !this.currentTrack) return false;
+      this.currentTrack.audioUrl = url;
+      this.currentTrack.previewUrl = url;
+      this.audio.src = url;
+      this.audioReady = true;
+      return true;
+    };
+
+    try {
+      const res = await fetch(`${this.getApiBase()}/api/song-of-the-month`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.name) this.currentTrack.name = data.name;
+        if (data.artist) this.currentTrack.artist = data.artist;
+        if (data.displayTitle) this.currentTrack.displayTitle = data.displayTitle;
+        if (data.spotify_url) this.currentTrack.spotifyUrl = data.spotify_url;
+        if (data.spotify_uri) this.currentTrack.spotifyUri = data.spotify_uri;
+        if (applyPreview(data.preview_url)) {
+          this.useSpotifyEmbed = false;
+          this.updateCurrentSongDisplay();
+          this.updatePlayerDisplay();
+          return;
+        }
+        if (this.currentTrack.spotifyUri) {
+          this.useSpotifyEmbed = true;
+          this.audioReady = true;
+          this.updateCurrentSongDisplay();
+          this.updatePlayerDisplay();
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('Could not load Spotify preview:', err);
+    }
+
+    if (this.currentTrack.spotifyUri) {
+      this.useSpotifyEmbed = true;
+      this.audioReady = true;
+      this.updateCurrentSongDisplay();
+      this.updatePlayerDisplay();
+      return;
+    }
+
+    try {
+      const probe = await fetch(localFallback, { method: 'HEAD' });
+      if (probe.ok && applyPreview(localFallback)) {
+        this.updateCurrentSongDisplay();
+        this.updatePlayerDisplay();
+        return;
+      }
+    } catch {
+      // no local file
+    }
+
+    this.audioReady = false;
+  }
+
   setupPlayer() {
     if (this.topTracks.length > 0) {
       // Use manual songs
@@ -723,10 +810,6 @@ class SpotifyPlayer {
       // Update modal if it's currently open
       this.updateModalIfOpen();
       
-      // Cycle through your actual top tracks every 30 seconds
-      setInterval(() => {
-        this.cycleThroughTracks();
-      }, 30000);
         } else {
       console.log('❌ No tracks available for player setup');
     }
@@ -745,19 +828,35 @@ class SpotifyPlayer {
   
   
   setupEventListeners() {
-    // Set up event listeners when the modal opens
     document.addEventListener('click', (e) => {
       if (e.target.closest('[data-zone="contact"]')) {
-        // Music player modal is opening, set up controls
-        setTimeout(() => {
-          this.setupModalControls();
-        }, 100);
+        setTimeout(() => this.setupModalControls(), 100);
+      }
+      if (e.target.closest('.music-player .play-button')) {
+        this.openMusicModalAndPlay();
       }
     });
   }
+
+  openMusicModalAndPlay() {
+    const game = window.portfolioGame;
+    if (game) {
+      game.openModal('contact');
+      game.playInteractSound?.();
+    }
+    setTimeout(async () => {
+      this.setupModalControls();
+      await this.togglePlayPause();
+    }, 150);
+  }
   
+  resetEmbed() {
+    this.embedController = null;
+    this.embedReadyPromise = null;
+  }
+
   setupModalControls() {
-    // Update the modal display with current track first
+    this.resetEmbed();
     this.updatePlayerDisplay();
     
     // Play/Pause button
@@ -767,7 +866,7 @@ class SpotifyPlayer {
       playPauseBtn.replaceWith(playPauseBtn.cloneNode(true));
       const newPlayPauseBtn = document.getElementById('play-pause');
       newPlayPauseBtn.addEventListener('click', () => {
-        this.togglePlayPause();
+        this.togglePlayPause().catch(console.warn);
       });
     }
     
@@ -801,9 +900,26 @@ class SpotifyPlayer {
   }
   
   updateCurrentSongDisplay() {
+    const text =
+      this.currentTrack?.displayTitle ||
+      (this.currentTrack
+        ? `${this.currentTrack.name} - ${this.currentTrack.artist}`
+        : '');
+
     const songTitle = document.getElementById('song-title');
-    if (songTitle && this.currentTrack) {
-      songTitle.textContent = `${this.currentTrack.name} - ${this.currentTrack.artist}`;
+    const songTitleCopy = document.querySelector('.song-marquee__text--copy');
+    const marquee = document.querySelector('.song-marquee');
+
+    if (songTitle) songTitle.textContent = text;
+    if (songTitleCopy) songTitleCopy.textContent = text;
+    if (marquee) marquee.setAttribute('aria-label', text);
+  }
+
+  updateCdPlayerLed() {
+    const ledText = document.getElementById('cd-led-text');
+    if (ledText && this.currentTrack) {
+      ledText.textContent =
+        this.currentTrack.ledLabel || this.currentTrack.displayTitle || 'CD';
     }
   }
   
@@ -817,8 +933,10 @@ class SpotifyPlayer {
     }
     
     if (artistName && this.currentTrack) {
-      artistName.textContent = this.currentTrack.artist;
+      artistName.textContent = `${this.currentTrack.artist} · 2013 Remaster`;
     }
+
+    this.updateCdPlayerLed();
     
     if (playPauseBtn) {
       playPauseBtn.textContent = this.isPlaying ? '⏸' : '▶';
@@ -833,36 +951,122 @@ class SpotifyPlayer {
     
     // Handle audio events
     this.audio.addEventListener('ended', () => {
-      this.nextTrack();
+      this.isPlaying = false;
+      this.updatePlayerDisplay();
+    });
+
+    this.audio.addEventListener('timeupdate', () => {
+      const progress = document.getElementById('progress');
+      if (progress && this.audio.duration) {
+        progress.style.width = `${(this.audio.currentTime / this.audio.duration) * 100}%`;
+      }
     });
     
-    this.audio.addEventListener('error', (e) => {
-      console.log('Audio error:', e);
-      // Fallback to visual feedback if audio fails
-    });
-    
-    this.audio.addEventListener('canplay', () => {
-      console.log('Audio ready to play');
+    this.audio.addEventListener('error', () => {
+      console.warn('Audio playback error');
+      this.isPlaying = false;
+      this.updatePlayerDisplay();
     });
   }
 
-  togglePlayPause() {
-    if (!this.currentTrack || !this.currentTrack.audioUrl) {
-      console.log('No audio URL available');
+  async ensurePlaybackReady() {
+    if (this.previewLoadPromise) await this.previewLoadPromise;
+    if (!this.audioReady && !this.currentTrack?.audioUrl && !this.currentTrack?.spotifyUri) {
+      await this.loadSongPreview();
+    }
+    return Boolean(this.currentTrack?.audioUrl || this.useSpotifyEmbed);
+  }
+
+  ensureSpotifyEmbed() {
+    if (this.embedController) {
+      return Promise.resolve(this.embedController);
+    }
+    if (this.embedReadyPromise) return this.embedReadyPromise;
+
+    this.embedReadyPromise = new Promise((resolve) => {
+      const host = document.getElementById('spotify-embed-host');
+      if (!host || !this.currentTrack?.spotifyUri) {
+        resolve(null);
+        return;
+      }
+
+      host.hidden = false;
+
+      const create = (IFrameAPI) => {
+        IFrameAPI.createController(
+          host,
+          {
+            uri: this.currentTrack.spotifyUri,
+            width: '100%',
+            height: '152',
+          },
+          (controller) => {
+            this.embedController = controller;
+            controller.addListener('ready', () => resolve(controller));
+            controller.addListener('playback_update', (e) => {
+              this.isPlaying = !e.data.isPaused;
+              this.updatePlayerDisplay();
+            });
+          }
+        );
+      };
+
+      if (window.SpotifyIframeApi) {
+        create(window.SpotifyIframeApi);
+      } else {
+        window.onSpotifyIframeApiReady = (IFrameAPI) => {
+          window.SpotifyIframeApi = IFrameAPI;
+          create(IFrameAPI);
+        };
+      }
+
+      setTimeout(() => resolve(this.embedController), 8000);
+    });
+
+    return this.embedReadyPromise;
+  }
+
+  showPlaybackHint() {
+    alert('Playback unavailable. Run `npm start` and open http://localhost:3001');
+  }
+
+  async togglePlayPause() {
+    if (!this.currentTrack) return;
+
+    const ready = await this.ensurePlaybackReady();
+    if (!ready) {
+      this.showPlaybackHint();
       return;
     }
-    
-    this.isPlaying = !this.isPlaying;
-    
-    if (this.isPlaying) {
-      this.playCurrentTrack();
-    } else {
-      this.pauseCurrentTrack();
+
+    if (this.useSpotifyEmbed) {
+      const controller = await this.ensureSpotifyEmbed();
+      if (!controller) {
+        this.showPlaybackHint();
+        return;
+      }
+      if (this.isPlaying) {
+        controller.pause();
+        this.isPlaying = false;
+      } else {
+        controller.play();
+        this.isPlaying = true;
+      }
+      this.updatePlayerDisplay();
+      return;
     }
-    
+
+    if (this.isPlaying) {
+      this.pauseCurrentTrack();
+      this.isPlaying = false;
+      this.updatePlayerDisplay();
+      return;
+    }
+
+    this.isPlaying = true;
+    await this.playCurrentTrack();
     this.updatePlayerDisplay();
-    
-    // Visual feedback
+
     const playPauseBtn = document.getElementById('play-pause');
     if (playPauseBtn) {
       playPauseBtn.style.transform = 'scale(0.95)';
@@ -872,34 +1076,35 @@ class SpotifyPlayer {
     }
   }
 
-  playCurrentTrack() {
-    if (!this.currentTrack || !this.currentTrack.audioUrl) return;
-    
+  async playCurrentTrack() {
+    if (!this.currentTrack?.audioUrl) return;
+
     try {
-      this.audio.src = this.currentTrack.audioUrl;
-      this.audio.currentTime = 0;
-      
+      if (this.audio.src !== this.currentTrack.audioUrl) {
+        this.audio.src = this.currentTrack.audioUrl;
+      }
+
       const playPromise = this.audio.play();
       if (playPromise !== undefined) {
-        playPromise.then(() => {
-          console.log(`Playing: ${this.currentTrack.name}`);
-        }).catch(error => {
-          console.log('Playback failed:', error);
-          this.isPlaying = false;
-          this.updatePlayerDisplay();
-        });
+        await playPromise;
+        console.log(`Playing: ${this.currentTrack.displayTitle || this.currentTrack.name}`);
       }
     } catch (error) {
-      console.log('Audio playback error:', error);
+      console.warn('Playback failed:', error);
       this.isPlaying = false;
       this.updatePlayerDisplay();
+      if (error.name === 'NotAllowedError') {
+        console.warn('Click play again after interacting with the page (browser autoplay policy).');
+      }
     }
   }
 
   pauseCurrentTrack() {
+    if (this.embedController && this.useSpotifyEmbed) {
+      this.embedController.pause();
+    }
     if (this.audio) {
       this.audio.pause();
-      console.log('Paused');
     }
   }
   
@@ -967,12 +1172,12 @@ class SpotifyPlayer {
 
 // Initialize the game when the page loads
 document.addEventListener('DOMContentLoaded', () => {
-  new PokemonPortfolioGame();
+  window.portfolioGame = new PokemonPortfolioGame();
   const spotifyPlayer = new SpotifyPlayer();
   
   // Make spotifyPlayer globally accessible
   window.spotifyPlayer = spotifyPlayer;
-  console.log('🎵 Music player ready with manual songs!');
+  console.log('🎵 Song of the month ready!');
   
   // Manual songs are now set up automatically - no token needed!
   
